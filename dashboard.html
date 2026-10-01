@@ -160,6 +160,11 @@
                         </div>
                     </div>
 
+                    <button class="btn btn-sm btn-outline-emerald" id="topStateToggleBtn" onclick="toggleUserMode()" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 0.78rem;" title="Switch between New User (0) and Demo Data">
+                        <i data-lucide="sparkles" style="width: 14px;"></i>
+                        <span id="topStateToggleText">Mode: Starts at 0</span>
+                    </button>
+
                     <div class="user-avatar-sm" onclick="logout()" title="Sign Out / Switch User" style="cursor: pointer;">
                         <div id="headerAvatar" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #16a34a, #059669); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; border: 2px solid rgba(74, 222, 128, 0.4);">AD</div>
                     </div>
@@ -171,6 +176,22 @@
 
                 <!-- PAGE 1: OVERVIEW PAGE -->
                 <section class="page-view" id="page-overview">
+                    <!-- Zero State Welcome Banner for New Users -->
+                    <div class="user-status-card" id="userWelcomeBanner" style="background: rgba(13, 53, 38, 0.75); border: 1px solid rgba(74, 222, 128, 0.25); border-radius: 14px; padding: 18px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <span class="badge badge-success" id="bannerBadge"><i data-lucide="sparkles" style="width:12px; display:inline;"></i> New User Account</span>
+                                <span style="font-size: 0.8rem; color: #86efac;" id="userEmailTag">newuser@campus.edu</span>
+                            </div>
+                            <h3 style="color: #ffffff; font-size: 1.05rem; margin: 0; font-weight: 700;" id="bannerTitle">Campus Ledger Initialized at 0 • No previous data updated</h3>
+                            <p style="color: #94a3b8; font-size: 0.84rem; margin: 4px 0 0 0;" id="bannerDesc">Welcome! As a new campus user, your footprint starts at 0 kg CO₂. Scan your first electricity bill or log department data to begin tracking.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-shrink: 0;">
+                            <a href="scanner.html" class="btn btn-emerald btn-sm"><i data-lucide="scan-line"></i> Scan Bill</a>
+                            <button class="btn btn-secondary btn-sm" id="btnToggleDemo" onclick="toggleUserMode()"><i data-lucide="database"></i> Load Demo Data</button>
+                        </div>
+                    </div>
+
                     <!-- Top KPI Cards -->
                     <div class="kpi-grid">
                         <div class="kpi-card">
@@ -340,12 +361,26 @@
                             </div>
                         </div>
 
-                        <div class="tool-shortcut-card" onclick="navigateToPage('naac')">
+                        <div class="tool-shortcut-card" onclick="window.location.href='reports.html'">
                             <i data-lucide="file-badge-2"></i>
                             <div>
                                 <h4>NAAC / NIRF Report</h4>
                                 <p>Generate green audit compliance report in one click</p>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Audit Activity Ledger (Recent Uploaded Bills) -->
+                    <div class="card" style="margin-top: 24px;" id="activityLedgerCard">
+                        <div class="card-header border-b">
+                            <div>
+                                <h3 class="card-title"><i data-lucide="receipt" class="text-emerald"></i> Campus Audit Ledger & User Activity</h3>
+                                <p class="card-subtitle">Electricity bills and department emissions logged by the current user</p>
+                            </div>
+                            <a href="scanner.html" class="btn btn-sm btn-emerald"><i data-lucide="plus"></i> Add Bill</a>
+                        </div>
+                        <div id="userActivityTableContainer" style="padding: 18px 24px;">
+                            <!-- Populated dynamically by app.js: either 0-state empty box or user bills table -->
                         </div>
                     </div>
                 </section>

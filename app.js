@@ -3,6 +3,91 @@
 
 const API_BASE = 'http://127.0.0.1:8000/api';
 
+// ==========================================
+// USER SPECIFIC DATA & ZERO-STATE MANAGEMENT
+// ==========================================
+function getUserEmail() {
+    const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+    return (sessionUser.email || 'newuser@campus.edu').toLowerCase();
+}
+
+function getUserMode() {
+    const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+    let mode = localStorage.getItem('ecotrace_user_mode');
+    if (!mode) {
+        mode = (sessionUser.isNewUser !== false && sessionUser.email !== 'admin@campus.edu') ? 'zero' : 'demo';
+        localStorage.setItem('ecotrace_user_mode', mode);
+    }
+    return mode;
+}
+
+function getUserBills() {
+    const email = getUserEmail();
+    const raw = localStorage.getItem('ecotrace_user_bills_' + email);
+    return raw ? JSON.parse(raw) : [];
+}
+
+function saveUserBills(bills) {
+    const email = getUserEmail();
+    localStorage.setItem('ecotrace_user_bills_' + email, JSON.stringify(bills));
+}
+
+function toggleUserMode() {
+    const current = getUserMode();
+    const next = current === 'zero' ? 'demo' : 'zero';
+    localStorage.setItem('ecotrace_user_mode', next);
+
+    const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+    sessionUser.isNewUser = (next === 'zero');
+    sessionStorage.setItem('ecotrace_user', JSON.stringify(sessionUser));
+
+    if (next === 'zero') {
+        showToast('Mode: Fresh User (0)', 'Started ledger from 0 with no previous data.');
+    } else {
+        showToast('Mode: Demo Data', 'Loaded full college historical dataset (37,161 kg CO₂).');
+    }
+
+    applyUserModeUi();
+    fetchOverviewData();
+    fetchLeaderboardData();
+}
+
+function applyUserModeUi() {
+    const mode = getUserMode();
+    const email = getUserEmail();
+    const bills = getUserBills();
+
+    const banner = document.getElementById('userWelcomeBanner');
+    const emailTag = document.getElementById('userEmailTag');
+    const bannerTitle = document.getElementById('bannerTitle');
+    const bannerDesc = document.getElementById('bannerDesc');
+    const btnToggleDemo = document.getElementById('btnToggleDemo');
+    const topStateToggleText = document.getElementById('topStateToggleText');
+
+    if (emailTag) emailTag.innerText = email;
+
+    if (mode === 'zero') {
+        if (bills.length === 0) {
+            if (bannerTitle) bannerTitle.innerText = "Campus Ledger Initialized at 0 • No previous data updated";
+            if (bannerDesc) bannerDesc.innerText = "Welcome! As a new campus auditor, your footprint starts at 0 kg CO₂. Scan your first electricity bill or log department data to begin tracking.";
+            if (topStateToggleText) topStateToggleText.innerText = "Mode: Starts at 0";
+        } else {
+            const totalKg = Math.round(bills.reduce((s, b) => s + b.co2_kg, 0));
+            if (bannerTitle) bannerTitle.innerText = `Active Campus Audit • ${bills.length} Bill Logged (${totalKg.toLocaleString()} kg CO₂)`;
+            if (bannerDesc) bannerDesc.innerText = `Your carbon ledger is actively recording data for ${email}.`;
+            if (topStateToggleText) topStateToggleText.innerText = `Mode: Active (${totalKg} kg)`;
+        }
+        if (btnToggleDemo) btnToggleDemo.innerHTML = '<i data-lucide="database"></i> Load Demo Data';
+    } else {
+        if (bannerTitle) bannerTitle.innerText = "Demo Campus Audit • Sample College Dataset Loaded";
+        if (bannerDesc) bannerDesc.innerText = "Showing comprehensive multi-department historical baseline for hackathon jury evaluation.";
+        if (topStateToggleText) topStateToggleText.innerText = "Mode: Demo Data (37.1t)";
+        if (btnToggleDemo) btnToggleDemo.innerHTML = '<i data-lucide="refresh-cw"></i> Start from 0';
+    }
+
+    if (window.lucide) window.lucide.createIcons();
+}
+
 // Global Data Store with fallback defaults
 let campusData = {
     institution: "Nashik College of Engineering",
@@ -46,7 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initSimulator();
     setupEventListeners();
 
-    // 4. Fetch live data from backend
+    // 4. Apply UI state for current user
+    applyUserModeUi();
+
+    // 5. Fetch live data from backend
     loadDepartmentsDropdown();
     fetchOverviewData();
     fetchLeaderboardData();
@@ -127,6 +215,64 @@ function navigateToPage(pageId, updateHash = true) {
 
 // 1. Fetch Overview & KPIs
 async function fetchOverviewData(targetMonth = '2026-10') {
+    applyUserModeUi();
+    const mode = getUserMode();
+    const userBills = getUserBills();
+
+    if (mode === 'zero') {
+        // Zero state or user-accumulated state!
+        let totalCo2 = 0;
+        let totalAmount = 0;
+        let totalKwh = 0;
+
+        if (userBills.length > 0) {
+            totalCo2 = Math.round(userBills.reduce((s, b) => s + (b.co2_kg || 0), 0));
+            totalAmount = Math.round(userBills.reduce((s, b) => s + (b.amount_inr || 0), 0));
+            totalKwh = Math.round(userBills.reduce((s, b) => s + (b.units_kwh || 0), 0));
+        }
+
+        campusData.currentEmissions = totalCo2;
+        campusData.energyCost = totalAmount;
+
+        // Update KPIs
+        const kpiCarbon = document.getElementById('kpiTotalCarbon');
+        if (kpiCarbon) {
+            kpiCarbon.innerHTML = `${totalCo2.toLocaleString()} <span class="unit">kg CO₂</span>`;
+        }
+
+        const kpiCost = document.getElementById('kpiEnergyCost');
+        if (kpiCost) {
+            kpiCost.innerText = `₹${totalAmount.toLocaleString()}`;
+        }
+
+        const kpiPerCap = document.getElementById('kpiPerCapita');
+        if (kpiPerCap) {
+            const perCap = totalCo2 > 0 ? (totalCo2 / campusData.totalStudents).toFixed(2) : "0.0";
+            kpiPerCap.innerHTML = `${perCap} <span class="unit">kg CO₂</span>`;
+        }
+
+        const kpiSavings = document.getElementById('kpiPotentialSavings');
+        if (kpiSavings) {
+            const sav = totalAmount > 0 ? Math.round(totalAmount * 0.15) : 0;
+            kpiSavings.innerHTML = `₹${sav.toLocaleString()} <span class="sub-freq">/mo</span>`;
+        }
+
+        // Charts
+        const labels = ["May", "Jun", "Jul", "Aug", "Sep", "Oct"];
+        const co2Vals = userBills.length > 0 ? [0, 0, 0, 0, 0, totalCo2] : [0, 0, 0, 0, 0, 0];
+        const costVals = userBills.length > 0 ? [0, 0, 0, 0, 0, totalAmount] : [0, 0, 0, 0, 0, 0];
+
+        campusData.monthlyHistory.labels = labels;
+        campusData.monthlyHistory.totalCo2 = co2Vals;
+        campusData.monthlyHistory.energyCost = costVals;
+
+        updateOverviewHeroChart(labels, co2Vals);
+        updateAnalyticsPageChart(labels, co2Vals, costVals);
+        renderUserActivityTable();
+        return;
+    }
+
+    // Demo Mode: Fetch live data from backend or cached fallback
     try {
         const res = await fetch(`${API_BASE}/overview?month=${targetMonth}`);
         if (!res.ok) throw new Error('Network response was not ok');
@@ -164,13 +310,113 @@ async function fetchOverviewData(targetMonth = '2026-10') {
             kpiPerCap.innerHTML = `${avgPerCapita} <span class="unit">kg CO₂</span>`;
         }
 
+        renderUserActivityTable();
     } catch (err) {
         console.warn('Backend overview not reachable, running with cached baseline data:', err.message);
+        renderUserActivityTable();
     }
+}
+
+function renderUserActivityTable() {
+    const container = document.getElementById('userActivityTableContainer');
+    if (!container) return;
+
+    const mode = getUserMode();
+    const bills = getUserBills();
+
+    if (mode === 'zero') {
+        if (bills.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 36px 16px; color: #94a3b8;">
+                    <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(74, 222, 128, 0.1); color: #4ade80; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid rgba(74, 222, 128, 0.2);">
+                        <i data-lucide="receipt" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h4 style="color: #ffffff; font-size: 1.05rem; margin-bottom: 4px; font-weight: 700;">No Previous Data Recorded</h4>
+                    <p style="font-size: 0.85rem; max-width: 440px; margin: 0 auto 16px auto; color: #94a3b8; line-height: 1.5;">This account is initialized fresh at 0. No electricity bills or campus logs have been attached to this profile yet.</p>
+                    <a href="scanner.html" class="btn btn-emerald btn-sm"><i data-lucide="scan-line"></i> Scan Your First Bill</a>
+                </div>
+            `;
+        } else {
+            let rowsHtml = bills.map((b, idx) => `
+                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+                    <td style="padding: 12px 8px;"><strong>#${bills.length - idx}</strong></td>
+                    <td style="padding: 12px 8px;"><strong>${b.department || 'Computer Engineering'}</strong></td>
+                    <td style="padding: 12px 8px;">${b.month || 'September 2026'}</td>
+                    <td style="padding: 12px 8px;">${(b.units_kwh || 0).toLocaleString()} kWh</td>
+                    <td style="padding: 12px 8px;">₹${Math.round(b.amount_inr || 0).toLocaleString()}</td>
+                    <td style="padding: 12px 8px;"><strong class="text-emerald">${Math.round(b.co2_kg || 0).toLocaleString()} kg CO₂</strong></td>
+                    <td style="padding: 12px 8px;"><span class="badge badge-success"><i data-lucide="check" style="width:11px;"></i> Logged</span></td>
+                </tr>
+            `).join('');
+
+            container.innerHTML = `
+                <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid rgba(74, 222, 128, 0.2); text-align: left; color: #86efac; font-size: 0.78rem;">
+                            <th style="padding: 10px 8px;">ID</th>
+                            <th style="padding: 10px 8px;">DEPARTMENT</th>
+                            <th style="padding: 10px 8px;">BILL PERIOD</th>
+                            <th style="padding: 10px 8px;">UNITS</th>
+                            <th style="padding: 10px 8px;">AMOUNT</th>
+                            <th style="padding: 10px 8px;">EMISSIONS</th>
+                            <th style="padding: 10px 8px;">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody style="color: #f1f5f9;">
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            `;
+        }
+    } else {
+        container.innerHTML = `
+            <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(74, 222, 128, 0.2); text-align: left; color: #86efac; font-size: 0.78rem;">
+                        <th style="padding: 10px 8px;">REF</th>
+                        <th style="padding: 10px 8px;">DEPARTMENT</th>
+                        <th style="padding: 10px 8px;">BILL PERIOD</th>
+                        <th style="padding: 10px 8px;">UNITS</th>
+                        <th style="padding: 10px 8px;">AMOUNT</th>
+                        <th style="padding: 10px 8px;">EMISSIONS</th>
+                        <th style="padding: 10px 8px;">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody style="color: #f1f5f9;">
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);"><td style="padding: 12px 8px;">#AUD-01</td><td style="padding: 12px 8px;"><strong>Computer Engineering</strong></td><td style="padding: 12px 8px;">September 2026</td><td style="padding: 12px 8px;">4,200 kWh</td><td style="padding: 12px 8px;">₹48,300</td><td style="padding: 12px 8px;"><strong class="text-emerald">2,982 kg CO₂</strong></td><td style="padding: 12px 8px;"><span class="badge badge-success">Audited</span></td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);"><td style="padding: 12px 8px;">#AUD-02</td><td style="padding: 12px 8px;"><strong>Chemistry & Materials Lab</strong></td><td style="padding: 12px 8px;">September 2026</td><td style="padding: 12px 8px;">3,000 kWh</td><td style="padding: 12px 8px;">₹34,500</td><td style="padding: 12px 8px;"><strong class="text-danger">2,130 kg CO₂</strong></td><td style="padding: 12px 8px;"><span class="badge badge-danger">Spike (+42.9%)</span></td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);"><td style="padding: 12px 8px;">#AUD-03</td><td style="padding: 12px 8px;"><strong>Mechanical Engineering</strong></td><td style="padding: 12px 8px;">September 2026</td><td style="padding: 12px 8px;">3,600 kWh</td><td style="padding: 12px 8px;">₹41,400</td><td style="padding: 12px 8px;"><strong class="text-emerald">2,556 kg CO₂</strong></td><td style="padding: 12px 8px;"><span class="badge badge-success">Audited</span></td></tr>
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);"><td style="padding: 12px 8px;">#AUD-04</td><td style="padding: 12px 8px;"><strong>Hostel Mess & Kitchens</strong></td><td style="padding: 12px 8px;">September 2026</td><td style="padding: 12px 8px;">2,800 kWh</td><td style="padding: 12px 8px;">₹32,200</td><td style="padding: 12px 8px;"><strong class="text-warning">1,988 kg CO₂</strong></td><td style="padding: 12px 8px;"><span class="badge badge-warning">Food Audit</span></td></tr>
+                </tbody>
+            </table>
+        `;
+    }
+
+    if (window.lucide) window.lucide.createIcons();
 }
 
 // 2. Fetch Leaderboard & Departments
 async function fetchLeaderboardData(mode = 'per_student', targetMonth = '2026-10') {
+    const userMode = getUserMode();
+    const userBills = getUserBills();
+
+    if (userMode === 'zero' && userBills.length === 0) {
+        // Render 0-state departments for a new user
+        const zeroDepts = [
+            { department: "Computer Engineering", students: 780, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 1, color: "green", change_percent: 0, badge: "NEW" },
+            { department: "Mechanical Engineering", students: 540, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 2, color: "green", change_percent: 0, badge: "NEW" },
+            { department: "Civil Engineering", students: 460, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 3, color: "green", change_percent: 0, badge: "NEW" },
+            { department: "Electrical Engineering", students: 420, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 4, color: "green", change_percent: 0, badge: "NEW" },
+            { department: "Chemistry & Materials Lab", students: 310, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 5, color: "green", change_percent: 0, badge: "NEW" },
+            { department: "Hostel Mess & Kitchens", students: 350, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 6, color: "green", change_percent: 0, badge: "NEW" },
+            { department: "Central Administration", students: 180, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 7, color: "green", change_percent: 0, badge: "NEW" },
+            { department: "Sports Complex", students: 100, co2_kg: 0, co2_per_student: 0.0, units_kwh: 0, amount_inr: 0, rank: 8, color: "green", change_percent: 0, badge: "NEW" }
+        ];
+        renderCarbonLeagueFromApi(zeroDepts);
+        renderDepartmentCardsFromApi(zeroDepts);
+        return;
+    }
+
     try {
         const res = await fetch(`${API_BASE}/leaderboard?month=${targetMonth}&mode=${mode}`);
         if (!res.ok) throw new Error('Leaderboard API error');
@@ -476,9 +722,25 @@ function recalculateOcrPreview() {
 async function confirmAddBillToFootprint() {
     const deptSelect = document.getElementById('ocrDeptSelect');
     const deptId = deptSelect ? parseInt(deptSelect.value) : 1;
+    const deptName = deptSelect && deptSelect.selectedIndex >= 0 ? deptSelect.options[deptSelect.selectedIndex].text : "Department";
     const units = parseFloat(document.getElementById('ocrInputUnits').value) || 3076;
     const amount = parseFloat(document.getElementById('ocrInputAmount').value) || 38459;
     const month = document.getElementById('ocrInputMonth').value || "September 2026";
+    const co2Val = Math.round(units * 0.71 * 10) / 10;
+
+    // Save to current user's personal bills array
+    const userBills = getUserBills();
+    userBills.unshift({
+        department_id: deptId,
+        department: deptName,
+        units_kwh: units,
+        amount_inr: amount,
+        co2_kg: co2Val,
+        file_name: currentScannedBill.file_name,
+        month: month,
+        timestamp: new Date().toISOString()
+    });
+    saveUserBills(userBills);
 
     const payload = {
         department_id: deptId,
@@ -504,12 +766,15 @@ async function confirmAddBillToFootprint() {
         fetchLeaderboardData();
         resetBillScanner();
     } catch (err) {
-        // Fallback update
+        // Local update
         campusData.currentEmissions += Math.round(units * 0.71);
         campusData.energyCost += Math.round(amount);
-        document.getElementById('kpiTotalCarbon').innerHTML = `${campusData.currentEmissions.toLocaleString()} <span class="unit">kg CO₂</span>`;
-        document.getElementById('kpiEnergyCost').innerText = `₹${campusData.energyCost.toLocaleString()}`;
+        const kpiC = document.getElementById('kpiTotalCarbon');
+        if (kpiC) kpiC.innerHTML = `${campusData.currentEmissions.toLocaleString()} <span class="unit">kg CO₂</span>`;
+        const kpiP = document.getElementById('kpiEnergyCost');
+        if (kpiP) kpiP.innerText = `₹${campusData.energyCost.toLocaleString()}`;
         showToast('Bill Logged', `Added ${Math.round(units * 0.71).toLocaleString()} kg CO₂ and ₹${Math.round(amount).toLocaleString()} to campus audit.`);
+        fetchOverviewData();
         resetBillScanner();
     }
 }

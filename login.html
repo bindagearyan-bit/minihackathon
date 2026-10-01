@@ -442,16 +442,20 @@
                 <div class="demo-title">
                     <i data-lucide="zap" style="width:14px;"></i> 1-Click Jury / Demo Login:
                 </div>
-                <div class="demo-pills">
-                    <button type="button" class="demo-pill" onclick="autoFillLogin('admin@campus.edu', 'ecotrace2026', 'admin')">
-                        Campus Admin
-                    </button>
-                    <button type="button" class="demo-pill" onclick="autoFillLogin('auditor@cea.gov.in', 'auditor2026', 'auditor')">
-                        Energy Auditor
-                    </button>
-                    <button type="button" class="demo-pill" onclick="autoFillLogin('ecoclub@student.edu', 'student2026', 'student')">
-                        Eco-Club Lead
-                    </button>
+                <div class="demo-pills" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="demo-pill" style="flex: 1; border-color: rgba(74, 222, 128, 0.4); background: rgba(34, 197, 94, 0.15);" onclick="autoFillLogin('newuser@campus.edu', 'ecotrace2026', 'student', true)">
+                            <i data-lucide="sparkles" style="width: 13px; display: inline;"></i> 🌱 New User (Starts at 0)
+                        </button>
+                        <button type="button" class="demo-pill" style="flex: 1;" onclick="autoFillLogin('admin@campus.edu', 'ecotrace2026', 'admin', false)">
+                            <i data-lucide="database" style="width: 13px; display: inline;"></i> 🏢 Campus Admin (Demo Data)
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="demo-pill" style="flex: 1;" onclick="autoFillLogin('auditor@cea.gov.in', 'auditor2026', 'auditor', true)">
+                            <i data-lucide="shield-check" style="width: 13px; display: inline;"></i> ⚡ Energy Auditor (Starts at 0)
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -465,6 +469,7 @@
 
     <script>
         let currentRole = 'admin';
+        let forceNewUserMode = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (window.lucide) {
@@ -491,10 +496,11 @@
             if (window.lucide) window.lucide.createIcons();
         }
 
-        function autoFillLogin(email, pass, role) {
+        function autoFillLogin(email, pass, role, isNew = true) {
             document.getElementById('emailInput').value = email;
             document.getElementById('passwordInput').value = pass;
             currentRole = role;
+            forceNewUserMode = isNew;
             const btns = document.querySelectorAll('.role-btn');
             btns.forEach(b => {
                 if (b.innerText.toLowerCase().includes(role)) {
@@ -520,15 +526,27 @@
                 return;
             }
 
+            // Determine if user is a new user (starts from 0)
+            const isDemoAdmin = (email.toLowerCase() === 'admin@campus.edu' && !forceNewUserMode);
+            const isNewUser = !isDemoAdmin;
+
             // Save user session
             const userSession = {
                 email: email,
                 role: currentRole,
                 institution: "Nashik College of Engineering",
-                loginTime: new Date().toISOString()
+                loginTime: new Date().toISOString(),
+                isNewUser: isNewUser
             };
             sessionStorage.setItem('ecotrace_user', JSON.stringify(userSession));
             localStorage.setItem('ecotrace_role', currentRole);
+            localStorage.setItem('ecotrace_user_mode', isNewUser ? 'zero' : 'demo');
+
+            // If new user, ensure their bill records start empty (starts from 0)
+            const userBillsKey = 'ecotrace_user_bills_' + email.toLowerCase();
+            if (isNewUser && !localStorage.getItem(userBillsKey)) {
+                localStorage.setItem(userBillsKey, JSON.stringify([]));
+            }
 
             // Animate Button
             btn.disabled = true;
@@ -538,7 +556,7 @@
             // Real Page Redirection to Dashboard!
             setTimeout(() => {
                 window.location.href = "dashboard.html";
-            }, 500);
+            }, 400);
         }
 
         function quickForgot() {
