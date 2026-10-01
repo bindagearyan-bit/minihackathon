@@ -79,8 +79,9 @@ def _serve_page(filename: str):
     return HTMLResponse(f"<h1>EcoTrace {filename} not found</h1>", status_code=404)
 
 
+@app.get("/", response_class=HTMLResponse)
 @app.get("/app", response_class=HTMLResponse)
-@app.get("/index.html")
+@app.get("/index.html", response_class=HTMLResponse)
 def get_app():
     """Serves the EcoTrace frontend gateway (redirects to login or dashboard)."""
     return _serve_page("index.html")
@@ -156,11 +157,12 @@ def get_script():
     return FileResponse(js_file, media_type="application/javascript")
 
 
-@app.get("/")
-def root():
+@app.get("/health")
+@app.get("/api/health")
+def health():
     """
     Health check and welcome endpoint.
-    Points developers and judges to the dashboard and API documentation.
+    Points developers and judges to the API documentation.
     """
     return {
         "app_name": "EcoTrace",
