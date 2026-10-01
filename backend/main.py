@@ -18,19 +18,25 @@ from routers.reports import router as reports_router
 from routers.anomalies import router as anomalies_router
 from routers.tips import router as tips_router
 
-# Ensure storage directories exist for uploaded bills and generated PDF reports
+from fastapi.staticfiles import StaticFiles
+
+# Ensure storage directories exist for uploaded bills, reports, and static assets
 os.makedirs("uploads", exist_ok=True)
 os.makedirs("reports", exist_ok=True)
+os.makedirs("assets", exist_ok=True)
 
 # Create database tables automatically on startup
 Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Campus Carbon Auditor API",
+    title="EcoTrace - Campus Carbon Auditor API",
     description="Clean, beginner-friendly REST API for auditing college carbon footprint (UN SDG 13: Climate Action)",
     version="1.0"
 )
+
+# Serve static assets (such as the EcoTrace logo)
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 # Configure CORS so the React frontend can seamlessly communicate with this API during hackathon demos
 app.add_middleware(
@@ -59,5 +65,8 @@ def root():
     Points developers and judges to the interactive Swagger API documentation.
     """
     return {
-        "message": "Campus Carbon Auditor API is running. Visit /docs to test all APIs."
+        "app_name": "EcoTrace",
+        "tagline": "Campus Carbon Footprint Auditor (UN SDG 13: Climate Action)",
+        "logo_url": "/assets/logo.png",
+        "message": "EcoTrace API is running. Visit /docs to test all APIs."
     }

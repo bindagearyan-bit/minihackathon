@@ -6,7 +6,7 @@ import datetime
 from sqlalchemy.orm import Session
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 
 from models import Department, MonthlyUsage
@@ -74,7 +74,17 @@ def generate_naac_pdf(db: Session, target_month: str, output_path: str) -> str:
 
     # 1. Header & Title
     generation_date = datetime.date.today().strftime("%d %B %Y")
-    story.append(Paragraph("Green Campus Sustainability Report", title_style))
+    
+    # Add EcoTrace logo if available
+    logo_path = os.path.join("assets", "logo.png")
+    if os.path.exists(logo_path):
+        try:
+            story.append(RLImage(logo_path, width=110, height=45))
+            story.append(Spacer(1, 4))
+        except Exception:
+            pass
+
+    story.append(Paragraph("EcoTrace — Green Campus Sustainability Report", title_style))
     story.append(Paragraph(
         f"<b>Nashik College of Engineering — NAAC Criterion 7 / NIRF</b><br/>"
         f"Audit Month: <b>{target_month}</b> &nbsp;|&nbsp; Generated on: {generation_date}",
