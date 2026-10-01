@@ -64,13 +64,75 @@ from fastapi.responses import FileResponse, HTMLResponse
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 
+
+def _serve_page(filename: str):
+    file_path = os.path.join(parent_dir, filename)
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type="text/html")
+    return HTMLResponse(f"<h1>EcoTrace {filename} not found</h1>", status_code=404)
+
+
 @app.get("/app", response_class=HTMLResponse)
+@app.get("/index.html")
 def get_app():
-    """Serves the complete interactive EcoTrace frontend dashboard."""
-    index_file = os.path.join(parent_dir, "index.html")
-    if os.path.exists(index_file):
-        return FileResponse(index_file)
-    return "<h1>EcoTrace index.html not found</h1>"
+    """Serves the EcoTrace frontend gateway (redirects to login or dashboard)."""
+    return _serve_page("index.html")
+
+
+@app.get("/login", response_class=HTMLResponse)
+@app.get("/login.html")
+def get_login():
+    """Serves the EcoTrace authentication page."""
+    return _serve_page("login.html")
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+@app.get("/dashboard.html")
+def get_dashboard():
+    """Serves the EcoTrace campus overview dashboard."""
+    return _serve_page("dashboard.html")
+
+
+@app.get("/scanner", response_class=HTMLResponse)
+@app.get("/scanner.html")
+def get_scanner():
+    """Serves the EcoTrace MSEDCL bill OCR scanner page."""
+    return _serve_page("scanner.html")
+
+
+@app.get("/league", response_class=HTMLResponse)
+@app.get("/league.html")
+def get_league():
+    """Serves the EcoTrace inter-department carbon league leaderboard."""
+    return _serve_page("league.html")
+
+
+@app.get("/mess", response_class=HTMLResponse)
+@app.get("/mess.html")
+def get_mess():
+    """Serves the EcoTrace hostel mess & food carbon auditor."""
+    return _serve_page("mess.html")
+
+
+@app.get("/simulator", response_class=HTMLResponse)
+@app.get("/simulator.html")
+def get_simulator():
+    """Serves the EcoTrace rooftop solar & operational savings simulator."""
+    return _serve_page("simulator.html")
+
+
+@app.get("/energy", response_class=HTMLResponse)
+@app.get("/energy.html")
+def get_energy():
+    """Serves the EcoTrace departmental energy & anomaly detection page."""
+    return _serve_page("energy.html")
+
+
+@app.get("/reports", response_class=HTMLResponse)
+@app.get("/reports.html")
+def get_reports():
+    """Serves the EcoTrace NAAC Criterion 7 & NIRF Institutional Green Audit Report."""
+    return _serve_page("reports.html")
 
 
 @app.get("/styles.css")

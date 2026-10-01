@@ -14,10 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css">
     <script>
-        // Automatic authentication gateway & page redirection
-        if (sessionStorage.getItem('ecotrace_user')) {
-            window.location.href = 'dashboard.html';
-        } else {
+        if (!sessionStorage.getItem('ecotrace_user')) {
             window.location.href = 'login.html';
         }
     </script>
@@ -48,35 +45,31 @@
             <nav class="nav-menu">
                 <div class="nav-group">
                     <span class="nav-label">OVERVIEW</span>
-                    <a href="#overview" class="nav-item active" data-page="overview">
+                    <a href="dashboard.html" class="nav-item active">
                         <i data-lucide="layout-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="#analytics" class="nav-item" data-page="analytics">
+                    <a href="#analytics" class="nav-item">
                         <i data-lucide="line-chart"></i>
                         <span>Carbon Analytics</span>
                     </a>
-                    <a href="#sources" class="nav-item" data-page="sources">
+                    <a href="#sources" class="nav-item">
                         <i data-lucide="pie-chart"></i>
                         <span>Carbon Sources</span>
                     </a>
                 </div>
 
                 <div class="nav-group">
-                    <span class="nav-label">CAMPUS</span>
-                    <a href="#departments" class="nav-item" data-page="departments">
-                        <i data-lucide="building"></i>
-                        <span>Departments</span>
-                    </a>
-                    <a href="#league" class="nav-item" data-page="league">
+                    <span class="nav-label">CAMPUS AUDIT</span>
+                    <a href="league.html" class="nav-item">
                         <i data-lucide="trophy"></i>
                         <span>Carbon League</span>
                     </a>
-                    <a href="#mess" class="nav-item" data-page="mess">
+                    <a href="mess.html" class="nav-item">
                         <i data-lucide="utensils"></i>
-                        <span>Mess Carbon</span>
+                        <span>Mess & Food</span>
                     </a>
-                    <a href="#energy" class="nav-item" data-page="energy">
+                    <a href="energy.html" class="nav-item">
                         <i data-lucide="zap"></i>
                         <span>Energy & Labs</span>
                     </a>
@@ -84,24 +77,20 @@
 
                 <div class="nav-group">
                     <span class="nav-label">TOOLS</span>
-                    <a href="#scanner" class="nav-item" data-page="scanner">
+                    <a href="scanner.html" class="nav-item">
                         <i data-lucide="scan-line"></i>
                         <span>Bill Scanner</span>
                         <span class="badge-ocr">OCR</span>
                     </a>
-                    <a href="#simulator" class="nav-item" data-page="simulator">
+                    <a href="simulator.html" class="nav-item">
                         <i data-lucide="sliders"></i>
                         <span>What-If Simulator</span>
-                    </a>
-                    <a href="#recommendations" class="nav-item" data-page="recommendations">
-                        <i data-lucide="sparkles"></i>
-                        <span>Recommendations</span>
                     </a>
                 </div>
 
                 <div class="nav-group">
                     <span class="nav-label">REPORTS</span>
-                    <a href="#naac" class="nav-item" data-page="naac">
+                    <a href="reports.html" class="nav-item">
                         <i data-lucide="file-badge-2"></i>
                         <span>NAAC / NIRF Report</span>
                     </a>
@@ -109,20 +98,21 @@
             </nav>
 
             <div class="sidebar-footer">
-                <div class="footer-links">
-                    <a href="#settings" class="footer-item" onclick="showToast('Settings', 'Campus configuration saved.')"><i data-lucide="settings"></i> Settings</a>
-                    <a href="#help" class="footer-item" onclick="showToast('Support', 'Contacting sustainability helpdesk.')"><i data-lucide="help-circle"></i> Help & Support</a>
-                </div>
                 <div class="sdg-badge">
                     <i data-lucide="globe-2"></i>
                     <span>UN SDG 13: Climate Action</span>
                 </div>
-                <div class="user-profile">
-                    <div class="avatar">AD</div>
-                    <div class="user-info">
-                        <span class="user-name">Admin</span>
-                        <span class="user-role">Campus Sustainability Admin</span>
+                <div class="user-profile" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="avatar" id="sidebarAvatar">AD</div>
+                        <div class="user-info">
+                            <span class="user-name" id="sidebarUserName">Admin</span>
+                            <span class="user-role" id="sidebarUserRole">Campus Lead</span>
+                        </div>
                     </div>
+                    <button onclick="logout()" title="Sign Out" style="background: none; border: none; color: #f87171; cursor: pointer; padding: 4px;">
+                        <i data-lucide="log-out" style="width: 18px;"></i>
+                    </button>
                 </div>
             </div>
         </aside>
@@ -162,11 +152,11 @@
                             <span>+ Add Carbon Data</span>
                         </button>
                         <div class="dropdown-menu hidden" id="addDataDropdown">
-                            <a href="#scanner" class="dropdown-item" onclick="navigateToPage('scanner')"><i data-lucide="file-text"></i> Upload MSEDCL Bill</a>
+                            <a href="scanner.html" class="dropdown-item"><i data-lucide="file-text"></i> Upload MSEDCL Bill</a>
                             <a href="#" class="dropdown-item" onclick="openManualInputModal('electricity')"><i data-lucide="zap"></i> Electricity Log</a>
                             <a href="#" class="dropdown-item" onclick="openManualInputModal('transport')"><i data-lucide="bus"></i> Transport Log</a>
-                            <a href="#" class="dropdown-item" onclick="openManualInputModal('food')"><i data-lucide="utensils"></i> Mess / Food Log</a>
-                            <a href="#" class="dropdown-item" onclick="openManualInputModal('computing')"><i data-lucide="cpu"></i> Computer Labs</a>
+                            <a href="mess.html" class="dropdown-item"><i data-lucide="utensils"></i> Mess / Food Log</a>
+                            <a href="energy.html" class="dropdown-item"><i data-lucide="cpu"></i> Computer Labs</a>
                         </div>
                     </div>
 
@@ -1093,5 +1083,21 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script src="app.js"></script>
+    <script>
+        function logout() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+        if (sessionUser.role) {
+            const roleUpper = sessionUser.role.toUpperCase();
+            const initials = sessionUser.role.substring(0, 2).toUpperCase();
+            if (document.getElementById('sidebarUserName')) document.getElementById('sidebarUserName').innerText = roleUpper;
+            if (document.getElementById('sidebarAvatar')) document.getElementById('sidebarAvatar').innerText = initials;
+            if (document.getElementById('headerAvatar')) document.getElementById('headerAvatar').innerText = initials;
+        }
+    </script>
 </body>
 </html>

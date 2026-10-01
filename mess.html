@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrace | Mess & Food Carbon - Green Day</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        if (!sessionStorage.getItem('ecotrace_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body class="bg-forest">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <a href="dashboard.html" class="brand-logo" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; text-decoration: none;">
+                    <img src="assets/logo.png" alt="EcoTrace Logo" class="brand-img" style="height: 48px; object-fit: contain; border-radius: 8px; background: #ffffff; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+                    <div class="brand-text">
+                        <h2 style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; margin: 0;">EcoTrace</h2>
+                        <span class="brand-sub" style="font-size: 0.72rem; color: #86efac; font-weight: 600; letter-spacing: 0.5px;">CARBON PULSE</span>
+                    </div>
+                </a>
+                
+                <div class="institution-selector">
+                    <div class="inst-info">
+                        <i data-lucide="building-2"></i>
+                        <span class="inst-name">Nashik College of Engg.</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <span class="nav-label">OVERVIEW</span>
+                    <a href="dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="dashboard.html#analytics" class="nav-item">
+                        <i data-lucide="line-chart"></i>
+                        <span>Carbon Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">CAMPUS AUDIT</span>
+                    <a href="league.html" class="nav-item">
+                        <i data-lucide="trophy"></i>
+                        <span>Carbon League</span>
+                    </a>
+                    <a href="mess.html" class="nav-item active">
+                        <i data-lucide="utensils"></i>
+                        <span>Mess & Food</span>
+                    </a>
+                    <a href="energy.html" class="nav-item">
+                        <i data-lucide="zap"></i>
+                        <span>Energy & Labs</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">TOOLS</span>
+                    <a href="scanner.html" class="nav-item">
+                        <i data-lucide="scan-line"></i>
+                        <span>Bill Scanner</span>
+                        <span class="badge-ocr">OCR</span>
+                    </a>
+                    <a href="simulator.html" class="nav-item">
+                        <i data-lucide="sliders"></i>
+                        <span>What-If Simulator</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">REPORTS</span>
+                    <a href="reports.html" class="nav-item">
+                        <i data-lucide="file-badge-2"></i>
+                        <span>NAAC / NIRF Report</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sdg-badge">
+                    <i data-lucide="globe-2"></i>
+                    <span>UN SDG 13: Climate Action</span>
+                </div>
+                <div class="user-profile" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="avatar" id="sidebarAvatar">AD</div>
+                        <div class="user-info">
+                            <span class="user-name" id="sidebarUserName">Admin</span>
+                            <span class="user-role" id="sidebarUserRole">Campus Lead</span>
+                        </div>
+                    </div>
+                    <button onclick="logout()" title="Sign Out" style="background: none; border: none; color: #f87171; cursor: pointer; padding: 4px;">
+                        <i data-lucide="log-out" style="width: 18px;"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobileMenuBtn"><i data-lucide="menu"></i></button>
+                    <div>
+                        <h1 class="header-title">Mess & Food Carbon Scoring</h1>
+                        <p class="header-subtitle">Scientific emission factors (Poore & Nemecek 2018) • <span class="tagline-highlight">"Measure. Understand. Reduce."</span></p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-sm btn-emerald" onclick="toggleGreenDay()">
+                        <i data-lucide="leaf"></i> Green Day Active
+                    </button>
+                </div>
+            </header>
+
+            <div class="dashboard-body" id="dashboardBody">
+                <section class="page-view" style="padding-bottom: 40px;">
+                    <div class="card mess-card">
+                        <div class="card-header border-b">
+                            <div>
+                                <h3 class="card-title"><i data-lucide="utensils" class="text-emerald"></i> Weekly Mess Carbon Menu & Pledges</h3>
+                                <p class="card-subtitle">Audited carbon footprint for 900 dining students daily</p>
+                            </div>
+                            <span class="badge badge-success"><i data-lucide="heart" style="width:12px; display:inline;"></i> Student Pledges Open</span>
+                        </div>
+
+                        <div class="mess-body">
+                            <!-- Live Meal Cards Grid populated from GET /api/mess -->
+                            <div class="meal-cards-grid">
+                                <!-- Populated dynamically by fetchMessMenu() -->
+                            </div>
+
+                            <div class="weekly-mess-schedule" style="margin-top: 30px; background: rgba(22, 163, 74, 0.08); padding: 20px; border-radius: 14px; border: 1px solid rgba(74, 222, 128, 0.2);">
+                                <h5 style="font-size: 1rem; color: #166534; font-weight: 700; margin-bottom: 12px;">
+                                    <i data-lucide="sparkles" class="text-emerald" style="display:inline-block; vertical-align:middle; width:20px; margin-right:6px;"></i>
+                                    <strong>Green Day Initiative:</strong> Replacing Saturday dinner (Mutton Thali) with a veg thali saves 4,680 kg CO₂ per week.
+                                </h5>
+                                <div class="days-row" style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <div class="day-pill med">Mon <span class="dot"></span> Poha & Varan Bhaat (0.8 kg)</div>
+                                    <div class="day-pill med">Tue <span class="dot"></span> Misal Pav & Egg Curry (1.3 kg)</div>
+                                    <div class="day-pill high">Wed <span class="dot"></span> Pithla & Chicken Rassa (2.5 kg)</div>
+                                    <div class="day-pill low active-green">Thu <span class="dot"></span> Veg Pulao & Dal Tadka (0.8 kg)</div>
+                                    <div class="day-pill med">Fri <span class="dot"></span> Usal Pav & Egg Bhurji (1.3 kg)</div>
+                                    <div class="day-pill high">Sat <span class="dot"></span> Sabudana & Mutton Thali (6.0 kg)</div>
+                                    <div class="day-pill high">Sun <span class="dot"></span> Puri Bhaji & Chicken Biryani (2.5 kg)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+    <script>
+        function logout() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+        if (sessionUser.role) {
+            document.getElementById('sidebarUserName').innerText = sessionUser.role.toUpperCase();
+            document.getElementById('sidebarAvatar').innerText = sessionUser.role.substring(0, 2).toUpperCase();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrace | MSEDCL Bill Scanner - Multilingual OCR</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Check session
+        if (!sessionStorage.getItem('ecotrace_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body class="bg-forest">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <a href="dashboard.html" class="brand-logo" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; text-decoration: none;">
+                    <img src="assets/logo.png" alt="EcoTrace Logo" class="brand-img" style="height: 48px; object-fit: contain; border-radius: 8px; background: #ffffff; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+                    <div class="brand-text">
+                        <h2 style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; margin: 0;">EcoTrace</h2>
+                        <span class="brand-sub" style="font-size: 0.72rem; color: #86efac; font-weight: 600; letter-spacing: 0.5px;">CARBON PULSE</span>
+                    </div>
+                </a>
+                
+                <div class="institution-selector">
+                    <div class="inst-info">
+                        <i data-lucide="building-2"></i>
+                        <span class="inst-name">Nashik College of Engg.</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <span class="nav-label">OVERVIEW</span>
+                    <a href="dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="dashboard.html#analytics" class="nav-item">
+                        <i data-lucide="line-chart"></i>
+                        <span>Carbon Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">CAMPUS AUDIT</span>
+                    <a href="league.html" class="nav-item">
+                        <i data-lucide="trophy"></i>
+                        <span>Carbon League</span>
+                    </a>
+                    <a href="mess.html" class="nav-item">
+                        <i data-lucide="utensils"></i>
+                        <span>Mess & Food</span>
+                    </a>
+                    <a href="energy.html" class="nav-item">
+                        <i data-lucide="zap"></i>
+                        <span>Energy & Labs</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">TOOLS</span>
+                    <a href="scanner.html" class="nav-item active">
+                        <i data-lucide="scan-line"></i>
+                        <span>Bill Scanner</span>
+                        <span class="badge-ocr">OCR</span>
+                    </a>
+                    <a href="simulator.html" class="nav-item">
+                        <i data-lucide="sliders"></i>
+                        <span>What-If Simulator</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">REPORTS</span>
+                    <a href="reports.html" class="nav-item">
+                        <i data-lucide="file-badge-2"></i>
+                        <span>NAAC / NIRF Report</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sdg-badge">
+                    <i data-lucide="globe-2"></i>
+                    <span>UN SDG 13: Climate Action</span>
+                </div>
+                <div class="user-profile" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="avatar" id="sidebarAvatar">AD</div>
+                        <div class="user-info">
+                            <span class="user-name" id="sidebarUserName">Admin</span>
+                            <span class="user-role" id="sidebarUserRole">Campus Lead</span>
+                        </div>
+                    </div>
+                    <button onclick="logout()" title="Sign Out" style="background: none; border: none; color: #f87171; cursor: pointer; padding: 4px;">
+                        <i data-lucide="log-out" style="width: 18px;"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobileMenuBtn"><i data-lucide="menu"></i></button>
+                    <div>
+                        <h1 class="header-title">MSEDCL Electricity Bill Scanner</h1>
+                        <p class="header-subtitle">Multilingual Optical Character Recognition (English, मराठी, हिन्दी) • <span class="tagline-highlight">"Measure. Understand. Reduce."</span></p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <span class="badge badge-emerald" style="padding: 6px 12px; font-weight: 600;"><i data-lucide="cpu" style="width:14px; display:inline;"></i> Tesseract OCR Active</span>
+                    <button class="btn btn-secondary btn-sm" onclick="logout()"><i data-lucide="log-out"></i> Sign Out</button>
+                </div>
+            </header>
+
+            <div class="dashboard-body" id="dashboardBody">
+                <section class="page-view" style="padding-bottom: 40px;">
+                    <div class="card bill-scanner-card">
+                        <div class="card-header border-b">
+                            <div class="scanner-header-title">
+                                <h3 class="card-title"><i data-lucide="scan-text" class="text-emerald"></i> Scan Electricity Bill</h3>
+                                <p class="card-subtitle">Upload an MSEDCL/Mahavitaran electricity bill to calculate CO₂ instantly using official CEA emission factors</p>
+                            </div>
+                            <div class="lang-selector">
+                                <span class="ocr-badge"><i data-lucide="languages"></i> Multilingual OCR</span>
+                                <div class="lang-pills">
+                                    <button class="lang-pill active">English</button>
+                                    <button class="lang-pill">मराठी</button>
+                                    <button class="lang-pill">हिन्दी</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="scanner-body">
+                            <!-- Dropzone -->
+                            <div class="upload-dropzone" id="billDropzonePage" onclick="triggerFileInput()">
+                                <input type="file" id="billFileInputPage" accept="image/*,.pdf" style="display: none;" onchange="handleBillUpload(event)">
+                                <div class="upload-icon-wrapper">
+                                    <i data-lucide="file-up"></i>
+                                </div>
+                                <div class="upload-instructions">
+                                    <span class="upload-primary">[ Click or Drag & Drop Bill Image/PDF ]</span>
+                                    <span class="upload-secondary">Supports PNG, JPG, JPEG, and PDF documents</span>
+                                    <div class="supported-tags">
+                                        <span>MSEDCL Standard Format</span>
+                                        <span>Marathi / Hindi Regex</span>
+                                        <span>0.71 kg CO₂/kWh Grid Baseline</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Progress State -->
+                            <div class="ocr-progress-container hidden" id="ocrProgressContainerPage">
+                                <div class="progress-step-indicator">
+                                    <div class="step step-active">1. Uploading</div>
+                                    <div class="step step-active">2. OCR Processing</div>
+                                    <div class="step step-active">3. Extracting Units</div>
+                                    <div class="step step-active">4. Calculating CO₂</div>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" id="ocrProgressBarPage" style="width: 50%;"></div>
+                                </div>
+                                <div class="scanner-status-text" id="ocrStatusTextPage">Scanning bill text via Tesseract OCR...</div>
+                            </div>
+
+                            <!-- OCR Result Card -->
+                            <div class="ocr-result-card hidden" id="ocrResultCardPage">
+                                <div class="result-badge-success">
+                                    <i data-lucide="check-circle-2"></i> Bill analyzed successfully by OCR engine
+                                </div>
+                                <div class="result-layout">
+                                    <div class="bill-preview-box">
+                                        <div class="bill-doc-thumbnail">
+                                            <div class="doc-header">MSEDCL BILL</div>
+                                            <div class="doc-line"></div>
+                                            <div class="doc-line short"></div>
+                                            <div class="doc-box" id="ocrThumbnailUnits">3,076 kWh</div>
+                                        </div>
+                                        <span class="doc-name" id="ocrThumbnailFilename">sample_bill.png</span>
+                                    </div>
+
+                                    <div class="result-details">
+                                        <ul class="verification-checks">
+                                            <li><i data-lucide="calendar"></i> Billing Month: <input type="text" id="ocrInputMonth" value="September 2026" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; width: 160px; margin-left: 8px;"></li>
+                                            <li><i data-lucide="zap"></i> Units Consumed (kWh): <input type="number" id="ocrInputUnits" value="3076" oninput="recalculateOcrPreview()" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 700; width: 120px; margin-left: 8px;"></li>
+                                            <li><i data-lucide="indian-rupee"></i> Net Bill Amount (₹): <input type="number" id="ocrInputAmount" value="38459" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 700; width: 120px; margin-left: 8px;"></li>
+                                            <li><i data-lucide="building"></i> Target Department: 
+                                                <select id="ocrDeptSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; margin-left: 8px; background: white;">
+                                                    <option value="1">Computer</option>
+                                                    <option value="2">Mechanical</option>
+                                                    <option value="3">Civil</option>
+                                                    <option value="4">Electrical</option>
+                                                    <option value="5">E&TC</option>
+                                                    <option value="6">Chemistry Lab</option>
+                                                    <option value="7">Hostel & Mess</option>
+                                                    <option value="8">Admin</option>
+                                                </select>
+                                            </li>
+                                        </ul>
+
+                                        <div class="big-emission-result">
+                                            <div class="val" id="ocrPreviewCo2">2,184 <span class="unit">kg CO₂e</span></div>
+                                            <div class="desc" id="ocrPreviewDesc">3076 kWh × 0.71 kg/kWh (CEA India grid factor) • Est. Cost: ₹38,459</div>
+                                        </div>
+
+                                        <div class="result-actions">
+                                            <button class="btn btn-emerald" id="ocrConfirmBtn" onclick="confirmAddBillToFootprint()">
+                                                <i data-lucide="check-circle-2"></i> Confirm & Save to Database
+                                            </button>
+                                            <button class="btn btn-secondary" onclick="resetBillScanner()">
+                                                Scan Another Bill
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+    <script>
+        function logout() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        // Set user profile from session
+        const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+        if (sessionUser.role) {
+            document.getElementById('sidebarUserName').innerText = sessionUser.role.toUpperCase();
+            document.getElementById('sidebarAvatar').innerText = sessionUser.role.substring(0, 2).toUpperCase();
+        }
+    </script>
+</body>
+</html>

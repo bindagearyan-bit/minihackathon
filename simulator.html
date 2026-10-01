@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrace | What-If Simulator - Energy & Budget Calculator</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        if (!sessionStorage.getItem('ecotrace_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body class="bg-forest">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <a href="dashboard.html" class="brand-logo" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; text-decoration: none;">
+                    <img src="assets/logo.png" alt="EcoTrace Logo" class="brand-img" style="height: 48px; object-fit: contain; border-radius: 8px; background: #ffffff; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+                    <div class="brand-text">
+                        <h2 style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; margin: 0;">EcoTrace</h2>
+                        <span class="brand-sub" style="font-size: 0.72rem; color: #86efac; font-weight: 600; letter-spacing: 0.5px;">CARBON PULSE</span>
+                    </div>
+                </a>
+                
+                <div class="institution-selector">
+                    <div class="inst-info">
+                        <i data-lucide="building-2"></i>
+                        <span class="inst-name">Nashik College of Engg.</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <span class="nav-label">OVERVIEW</span>
+                    <a href="dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="dashboard.html#analytics" class="nav-item">
+                        <i data-lucide="line-chart"></i>
+                        <span>Carbon Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">CAMPUS AUDIT</span>
+                    <a href="league.html" class="nav-item">
+                        <i data-lucide="trophy"></i>
+                        <span>Carbon League</span>
+                    </a>
+                    <a href="mess.html" class="nav-item">
+                        <i data-lucide="utensils"></i>
+                        <span>Mess & Food</span>
+                    </a>
+                    <a href="energy.html" class="nav-item">
+                        <i data-lucide="zap"></i>
+                        <span>Energy & Labs</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">TOOLS</span>
+                    <a href="scanner.html" class="nav-item">
+                        <i data-lucide="scan-line"></i>
+                        <span>Bill Scanner</span>
+                        <span class="badge-ocr">OCR</span>
+                    </a>
+                    <a href="simulator.html" class="nav-item active">
+                        <i data-lucide="sliders"></i>
+                        <span>What-If Simulator</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">REPORTS</span>
+                    <a href="reports.html" class="nav-item">
+                        <i data-lucide="file-badge-2"></i>
+                        <span>NAAC / NIRF Report</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sdg-badge">
+                    <i data-lucide="globe-2"></i>
+                    <span>UN SDG 13: Climate Action</span>
+                </div>
+                <div class="user-profile" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="avatar" id="sidebarAvatar">AD</div>
+                        <div class="user-info">
+                            <span class="user-name" id="sidebarUserName">Admin</span>
+                            <span class="user-role" id="sidebarUserRole">Campus Lead</span>
+                        </div>
+                    </div>
+                    <button onclick="logout()" title="Sign Out" style="background: none; border: none; color: #f87171; cursor: pointer; padding: 4px;">
+                        <i data-lucide="log-out" style="width: 18px;"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobileMenuBtn"><i data-lucide="menu"></i></button>
+                    <div>
+                        <h1 class="header-title">What-If Savings Simulator</h1>
+                        <p class="header-subtitle">Interactive operational policy & rooftop solar modeling • <span class="tagline-highlight">"Measure. Understand. Reduce."</span></p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-secondary btn-sm" onclick="resetSimulator()">Reset</button>
+                    <button class="btn btn-emerald btn-sm" onclick="applySimulatorScenario()"><i data-lucide="save"></i> Save Scenario</button>
+                </div>
+            </header>
+
+            <div class="dashboard-body" id="dashboardBody">
+                <section class="page-view" style="padding-bottom: 40px;">
+                    <div class="card simulator-card">
+                        <div class="card-header border-b">
+                            <div>
+                                <h3 class="card-title"><i data-lucide="sliders" class="text-emerald"></i> Operational Interventions Calculator</h3>
+                                <p class="card-subtitle">Real-time simulation connected to CEA grid factor (0.71 kg CO₂/kWh) & MSEDCL tariff (₹11.5/kWh)</p>
+                            </div>
+                            <span class="badge badge-success"><i data-lucide="zap" style="width:12px; display:inline;"></i> Live Math Engine</span>
+                        </div>
+
+                        <div class="simulator-body" style="padding: 24px;">
+                            <div class="sim-sliders-column">
+                                <div class="slider-group">
+                                    <div class="slider-header">
+                                        <label for="sliderPcTimePage"><i data-lucide="laptop"></i> 200 Computer Lab Workstations Shutdown Time</label>
+                                        <span class="slider-val" id="valPcTimePage">6 PM (Automatic)</span>
+                                    </div>
+                                    <input type="range" id="sliderPcTimePage" min="6" max="9" step="1" value="6" oninput="updateSimulator()">
+                                    <div class="slider-ticks">
+                                        <span>6 PM</span>
+                                        <span>7 PM</span>
+                                        <span>8 PM</span>
+                                        <span>9 PM</span>
+                                    </div>
+                                    <div class="sim-calculated-pill">
+                                        <span>Monthly Energy Saved: <strong id="simPcSavesKwhPage">1,980 kWh</strong></span> • 
+                                        <span class="text-emerald">Bill Reduction: <strong id="simPcSavesCostPage">₹22,770/mo</strong></span> • 
+                                        <span>CO₂ Cut: <strong id="simPcSavesCo2Page">1,405.8 kg/mo</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="slider-group" style="margin-top: 24px;">
+                                    <div class="slider-header">
+                                        <label for="sliderSolarPage"><i data-lucide="sun"></i> Campus Rooftop Solar Addition (kW)</label>
+                                        <span class="slider-val" id="valSolarPage">50 kW</span>
+                                    </div>
+                                    <input type="range" id="sliderSolarPage" min="0" max="100" step="25" value="50" oninput="updateSimulator()">
+                                    <div class="slider-ticks">
+                                        <span>0 kW</span>
+                                        <span>25 kW</span>
+                                        <span>50 kW</span>
+                                        <span>100 kW</span>
+                                    </div>
+                                    <div class="sim-calculated-pill">
+                                        <span>Clean Solar Generation: <strong id="simSolarCo2Page">15,000 kg CO₂/yr</strong></span> • 
+                                        <span>Investment Payback: <strong id="simSolarPaybackPage">3.2 years</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="slider-group" style="margin-top: 24px;">
+                                    <div class="slider-header">
+                                        <label for="sliderCarpoolPage"><i data-lucide="lightbulb"></i> LED Retrofit (Old 40W tubes to 18W LED)</label>
+                                        <span class="slider-val" id="valCarpoolPage">150 units</span>
+                                    </div>
+                                    <input type="range" id="sliderCarpoolPage" min="0" max="300" step="50" value="150" oninput="updateSimulator()">
+                                    <div class="slider-ticks">
+                                        <span>0</span>
+                                        <span>100</span>
+                                        <span>200</span>
+                                        <span>300 units</span>
+                                    </div>
+                                    <div class="sim-calculated-pill">
+                                        <span>Lighting Power Saved: <strong>22W per fixture</strong></span> • 
+                                        <span class="text-emerald">Daily Hours: <strong>8 hrs/day</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sim-results-column">
+                                <div class="before-after-box">
+                                    <div class="sim-stat-block">
+                                        <span class="lbl">CURRENT CAMPUS FOOTPRINT</span>
+                                        <span class="val">37,161 <small>kg CO₂</small></span>
+                                    </div>
+
+                                    <div class="sim-arrow"><i data-lucide="arrow-down"></i></div>
+
+                                    <div class="sim-stat-block highlight-sim">
+                                        <span class="lbl">SIMULATED CAMPUS FOOTPRINT</span>
+                                        <span class="val text-emerald" id="simulatedFootprintValPage">33,761 <small>kg CO₂</small></span>
+                                    </div>
+
+                                    <div class="sim-arrow"><i data-lucide="arrow-down"></i></div>
+
+                                    <div class="sim-stat-block reduction-block">
+                                        <span class="lbl">TOTAL ANNUAL BENEFIT</span>
+                                        <span class="val text-success" id="simulatedReductionValPage">3,400 <small>kg CO₂ / mo</small></span>
+                                        <span class="sub-cost text-emerald" id="simulatedCostReductionValPage">Savings: ₹59,478 / month</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+    <script>
+        function logout() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+        if (sessionUser.role) {
+            document.getElementById('sidebarUserName').innerText = sessionUser.role.toUpperCase();
+            document.getElementById('sidebarAvatar').innerText = sessionUser.role.substring(0, 2).toUpperCase();
+        }
+    </script>
+</body>
+</html>

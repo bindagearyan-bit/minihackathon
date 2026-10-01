@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrace | Energy & Labs - Statistical Anomaly Alerts</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        if (!sessionStorage.getItem('ecotrace_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body class="bg-forest">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <a href="dashboard.html" class="brand-logo" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; text-decoration: none;">
+                    <img src="assets/logo.png" alt="EcoTrace Logo" class="brand-img" style="height: 48px; object-fit: contain; border-radius: 8px; background: #ffffff; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+                    <div class="brand-text">
+                        <h2 style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; margin: 0;">EcoTrace</h2>
+                        <span class="brand-sub" style="font-size: 0.72rem; color: #86efac; font-weight: 600; letter-spacing: 0.5px;">CARBON PULSE</span>
+                    </div>
+                </a>
+                
+                <div class="institution-selector">
+                    <div class="inst-info">
+                        <i data-lucide="building-2"></i>
+                        <span class="inst-name">Nashik College of Engg.</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <span class="nav-label">OVERVIEW</span>
+                    <a href="dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="dashboard.html#analytics" class="nav-item">
+                        <i data-lucide="line-chart"></i>
+                        <span>Carbon Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">CAMPUS AUDIT</span>
+                    <a href="league.html" class="nav-item">
+                        <i data-lucide="trophy"></i>
+                        <span>Carbon League</span>
+                    </a>
+                    <a href="mess.html" class="nav-item">
+                        <i data-lucide="utensils"></i>
+                        <span>Mess & Food</span>
+                    </a>
+                    <a href="energy.html" class="nav-item active">
+                        <i data-lucide="zap"></i>
+                        <span>Energy & Labs</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">TOOLS</span>
+                    <a href="scanner.html" class="nav-item">
+                        <i data-lucide="scan-line"></i>
+                        <span>Bill Scanner</span>
+                        <span class="badge-ocr">OCR</span>
+                    </a>
+                    <a href="simulator.html" class="nav-item">
+                        <i data-lucide="sliders"></i>
+                        <span>What-If Simulator</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">REPORTS</span>
+                    <a href="reports.html" class="nav-item">
+                        <i data-lucide="file-badge-2"></i>
+                        <span>NAAC / NIRF Report</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sdg-badge">
+                    <i data-lucide="globe-2"></i>
+                    <span>UN SDG 13: Climate Action</span>
+                </div>
+                <div class="user-profile" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="avatar" id="sidebarAvatar">AD</div>
+                        <div class="user-info">
+                            <span class="user-name" id="sidebarUserName">Admin</span>
+                            <span class="user-role" id="sidebarUserRole">Campus Lead</span>
+                        </div>
+                    </div>
+                    <button onclick="logout()" title="Sign Out" style="background: none; border: none; color: #f87171; cursor: pointer; padding: 4px;">
+                        <i data-lucide="log-out" style="width: 18px;"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobileMenuBtn"><i data-lucide="menu"></i></button>
+                    <div>
+                        <h1 class="header-title">Energy Analytics & Smart Solar Scheduling</h1>
+                        <p class="header-subtitle">Z-Score statistical spike detection and peak clean grid timing • <span class="tagline-highlight">"Measure. Understand. Reduce."</span></p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <span class="badge badge-warning" style="padding: 6px 12px; font-weight: 600;"><i data-lucide="alert-triangle" style="width:14px; display:inline;"></i> 1 Active Energy Anomaly</span>
+                </div>
+            </header>
+
+            <div class="dashboard-body" id="dashboardBody">
+                <section class="page-view" style="padding-bottom: 40px;">
+                    <div class="grid-2-col-equal">
+                        <!-- Energy Anomaly Alert -->
+                        <div class="card anomaly-card">
+                            <div class="card-header border-b">
+                                <div class="anomaly-header">
+                                    <span class="pulse-alert-dot"></span>
+                                    <h3 class="card-title text-amber">Energy Anomaly Detected</h3>
+                                </div>
+                                <span class="badge badge-danger">High Severity Spike</span>
+                            </div>
+
+                            <div class="anomaly-body" style="padding: 24px;">
+                                <div class="anomaly-target">
+                                    <div class="target-icon"><i data-lucide="flask-conical"></i></div>
+                                    <div class="target-details">
+                                        <h4>Chemistry Lab</h4>
+                                        <p class="anomaly-msg">"Chemistry Lab used 42.9% more electricity than its 3-month average (extra ₹15,686 and 968 kg CO₂)."</p>
+                                    </div>
+                                </div>
+
+                                <div class="anomaly-stats-grid" style="margin-top: 20px;">
+                                    <div class="stat-box"><span class="lbl">October 2026</span><span class="val">4,544 <small>kWh</small></span></div>
+                                    <div class="stat-box"><span class="lbl">3-Mo Average</span><span class="val">3,180 <small>kWh</small></span></div>
+                                    <div class="stat-box"><span class="lbl">Deviation</span><span class="val text-danger">+42.9%</span></div>
+                                    <div class="stat-box"><span class="lbl">Z-Score</span><span class="val text-warning">6.1</span></div>
+                                </div>
+
+                                <div class="anomaly-footer" style="margin-top: 20px;">
+                                    <button class="btn btn-warning w-full" onclick="openAnomalyInvestigationModal()">
+                                        <i data-lucide="search"></i> View Statistical Anomaly Chart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Solar Timing Tip Card -->
+                        <div class="card solar-tip-card">
+                            <div class="card-header border-b">
+                                <div class="solar-title">
+                                    <i data-lucide="sun" class="text-amber"></i>
+                                    <h3 class="card-title">Solar Timing Optimization</h3>
+                                </div>
+                                <span class="badge badge-amber">Clean Grid Window</span>
+                            </div>
+                            <div class="solar-body" style="padding: 24px;">
+                                <div class="solar-hero-box">
+                                    <h4>☀ Run heavy campus tasks between <strong>11 AM – 3 PM</strong></h4>
+                                    <p class="solar-desc">Between 11 AM and 3 PM, solar power is highest, so the electricity you use at that time comes from cleaner sources. If the campus adds rooftop solar, these hours use your own free electricity.</p>
+                                </div>
+
+                                <div class="solar-timing-graphic" style="margin-top: 20px;">
+                                    <div class="timeline-bar">
+                                        <span class="time-mark">8 AM</span>
+                                        <div class="window-highlight">
+                                            <i data-lucide="sun" class="sun-icon"></i>
+                                            <span>11 AM — 3 PM</span>
+                                            <span class="sub">Peak Solar Generation Window</span>
+                                        </div>
+                                        <span class="time-mark">6 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="recommended-activities" style="margin-top: 24px;">
+                                    <h5>Scheduled Equipment (Shift to 11 AM – 3 PM):</h5>
+                                    <div class="activity-tags" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+                                        <span class="act-tag"><i data-lucide="droplets"></i> Water Pump (7.5 kW)</span>
+                                        <span class="act-tag"><i data-lucide="server"></i> Lab Server Room (5.0 kW)</span>
+                                        <span class="act-tag"><i data-lucide="shirt"></i> Hostel Laundry (4.0 kW)</span>
+                                        <span class="act-tag"><i data-lucide="wrench"></i> Workshop Machines (15.0 kW)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Anomaly Details -->
+    <div class="modal-overlay hidden" id="anomalyModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3><i data-lucide="alert-triangle" class="text-warning"></i> Anomaly Investigation: Chemistry Lab Spike</h3>
+                <button class="modal-close" onclick="closeModal('anomalyModal')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 14px;">Statistical comparison of Chemistry Lab power draw against its 3-month baseline mean:</p>
+                <div class="anomaly-chart-box" style="height: 280px; position: relative;">
+                    <canvas id="anomalyDetailChart"></canvas>
+                </div>
+                <div class="investigation-notes" style="margin-top: 20px; background: rgba(245, 158, 11, 0.08); padding: 16px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                    <h4 style="color: #B45309; font-weight: 700; margin-bottom: 8px;">Statistical Diagnostic Summary:</h4>
+                    <ul style="font-size: 0.85rem; color: var(--text-primary); line-height: 1.6; padding-left: 20px;">
+                        <li><strong>Baseline 3-Month Mean:</strong> 3,180 kWh (Jul: 2,906 | Aug: 3,180 | Sep: 3,454)</li>
+                        <li><strong>October Consumption:</strong> 4,544 kWh (+1,364 kWh excess electricity)</li>
+                        <li><strong>Standard Deviation (σ):</strong> 223.7 kWh | <strong>Z-Score:</strong> 6.1 (Flagged > 1.5 threshold)</li>
+                        <li><strong>Financial Impact:</strong> ₹15,686 excess cost & 968.4 kg excess CO₂</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('anomalyModal')">Close</button>
+                <button class="btn btn-warning" onclick="resolveAnomaly()"><i data-lucide="check"></i> Create Facilities Work Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+    <script>
+        function logout() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+        if (sessionUser.role) {
+            document.getElementById('sidebarUserName').innerText = sessionUser.role.toUpperCase();
+            document.getElementById('sidebarAvatar').innerText = sessionUser.role.substring(0, 2).toUpperCase();
+        }
+    </script>
+</body>
+</html>

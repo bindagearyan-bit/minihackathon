@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrace | Sign In - Campus Carbon Footprint Auditor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-forest: #07241A;
+            --bg-darker: #041711;
+            --emerald-500: #22C55E;
+            --emerald-600: #16A34A;
+            --emerald-400: #4ADE80;
+            --emerald-glow: rgba(34, 197, 94, 0.25);
+            --card-glass: rgba(13, 53, 38, 0.72);
+            --card-border: rgba(74, 222, 128, 0.18);
+            --text-light: #F0FDF4;
+            --text-muted: #94A3B8;
+            --input-bg: rgba(6, 31, 23, 0.75);
+            --input-border: rgba(74, 222, 128, 0.22);
+            --font-main: 'Inter', sans-serif;
+            --font-heading: 'Manrope', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--bg-darker);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(22, 163, 74, 0.2) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(20, 184, 166, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(6, 78, 59, 0.3) 0%, transparent 60%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            color: var(--text-light);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle animated background grid */
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 460px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Glassmorphic Login Card */
+        .login-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px 36px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 50px -10px var(--emerald-glow);
+            animation: cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(24px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Header & Logo */
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-wrap {
+            display: inline-block;
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 8px 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            margin-bottom: 18px;
+            border: 2px solid rgba(74, 222, 128, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-wrap:hover {
+            transform: scale(1.03);
+        }
+
+        .logo-wrap img {
+            height: 48px;
+            display: block;
+            object-fit: contain;
+        }
+
+        .login-header h1 {
+            font-family: var(--font-heading);
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .login-header p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+
+        /* Role Selector Pills */
+        .role-selector {
+            display: flex;
+            background: rgba(4, 23, 17, 0.85);
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            gap: 4px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .role-btn.active {
+            background: linear-gradient(135deg, var(--emerald-600) 0%, #15803D 100%);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #D1FAE5;
+            margin-bottom: 8px;
+        }
+
+        .input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-box i.input-icon {
+            position: absolute;
+            left: 14px;
+            width: 18px;
+            color: var(--emerald-400);
+            pointer-events: none;
+        }
+
+        .input-box input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: #ffffff;
+            padding: 13px 14px 13px 44px;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .input-box input:focus {
+            border-color: var(--emerald-400);
+            background: rgba(7, 36, 26, 0.95);
+            box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.15);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            cursor: pointer;
+            color: var(--text-muted);
+            width: 18px;
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: #ffffff;
+        }
+
+        /* Checkbox & Forgot */
+        .form-actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember-label input[type="checkbox"] {
+            accent-color: var(--emerald-500);
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .forgot-link {
+            color: var(--emerald-400);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: #86EFAC;
+            text-decoration: underline;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--emerald-500) 0%, var(--emerald-700) 100%);
+            color: #ffffff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
+            transition: all 0.25s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(34, 197, 94, 0.45);
+            background: linear-gradient(135deg, #2ED36B 0%, #15803D 100%);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Quick Demo Credentials Box */
+        .demo-credentials-box {
+            margin-top: 26px;
+            padding: 16px;
+            background: rgba(4, 23, 17, 0.6);
+            border: 1px dashed rgba(74, 222, 128, 0.25);
+            border-radius: 12px;
+            font-size: 0.78rem;
+        }
+
+        .demo-title {
+            color: var(--emerald-400);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .demo-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .demo-pill {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            color: #E2E8F0;
+            padding: 5px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.74rem;
+            transition: all 0.2s;
+        }
+
+        .demo-pill:hover {
+            background: var(--emerald-600);
+            color: white;
+        }
+
+        /* Footer badges */
+        .footer-compliance {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.76rem;
+            color: rgba(255, 255, 255, 0.45);
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .footer-compliance span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Error alert */
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- Brand & Logo -->
+            <div class="login-header">
+                <div class="logo-wrap">
+                    <img src="assets/logo.png" alt="EcoTrace Logo">
+                </div>
+                <h1>EcoTrace Portal</h1>
+                <p>Campus Carbon Footprint Auditor • UN SDG 13</p>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="role-selector">
+                <button type="button" class="role-btn active" onclick="setRole('admin', this)">
+                    <i data-lucide="shield-check" style="width:14px;"></i> Admin
+                </button>
+                <button type="button" class="role-btn" onclick="setRole('auditor', this)">
+                    <i data-lucide="file-check" style="width:14px;"></i> Auditor
+                </button>
+                <button type="button" class="role-btn" onclick="setRole('student', this)">
+                    <i data-lucide="graduation-cap" style="width:14px;"></i> Student
+                </button>
+            </div>
+
+            <!-- Error Banner -->
+            <div class="alert-error" id="errorAlert">
+                <i data-lucide="alert-circle" style="width:16px;"></i>
+                <span id="errorMessage">Invalid credentials. Please try again.</span>
+            </div>
+
+            <!-- Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="emailInput">
+                        <i data-lucide="mail" style="width:14px;"></i> Institutional Email / ID
+                    </label>
+                    <div class="input-box">
+                        <i data-lucide="user" class="input-icon"></i>
+                        <input type="text" id="emailInput" value="admin@campus.edu" required placeholder="e.g. admin@campus.edu" autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordInput">
+                        <i data-lucide="lock" style="width:14px;"></i> Access Password
+                    </label>
+                    <div class="input-box">
+                        <i data-lucide="key-round" class="input-icon"></i>
+                        <input type="password" id="passwordInput" value="ecotrace2026" required placeholder="••••••••" autocomplete="current-password">
+                        <i data-lucide="eye" class="toggle-password" id="eyeIcon" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions-row">
+                    <label class="remember-label">
+                        <input type="checkbox" id="rememberMe" checked>
+                        <span>Stay signed in</span>
+                    </label>
+                    <a href="#" class="forgot-link" onclick="quickForgot()">Forgot access?</a>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span>Enter Sustainability Portal</span>
+                    <i data-lucide="arrow-right" style="width:18px;"></i>
+                </button>
+            </form>
+
+            <!-- Quick Demo Credentials for Hackathon Jury -->
+            <div class="demo-credentials-box">
+                <div class="demo-title">
+                    <i data-lucide="zap" style="width:14px;"></i> 1-Click Jury / Demo Login:
+                </div>
+                <div class="demo-pills">
+                    <button type="button" class="demo-pill" onclick="autoFillLogin('admin@campus.edu', 'ecotrace2026', 'admin')">
+                        Campus Admin
+                    </button>
+                    <button type="button" class="demo-pill" onclick="autoFillLogin('auditor@cea.gov.in', 'auditor2026', 'auditor')">
+                        Energy Auditor
+                    </button>
+                    <button type="button" class="demo-pill" onclick="autoFillLogin('ecoclub@student.edu', 'student2026', 'student')">
+                        Eco-Club Lead
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Compliance -->
+            <div class="footer-compliance">
+                <span><i data-lucide="shield" style="width:12px;"></i> NAAC Criterion 7 Ready</span>
+                <span><i data-lucide="leaf" style="width:12px;"></i> UN SDG 13 Certified</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRole = 'admin';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        });
+
+        function setRole(role, btn) {
+            currentRole = role;
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById('passwordInput');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                passInput.type = 'password';
+                eyeIcon.setAttribute('data-lucide', 'eye');
+            }
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        function autoFillLogin(email, pass, role) {
+            document.getElementById('emailInput').value = email;
+            document.getElementById('passwordInput').value = pass;
+            currentRole = role;
+            const btns = document.querySelectorAll('.role-btn');
+            btns.forEach(b => {
+                if (b.innerText.toLowerCase().includes(role)) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+            // Automatically log in
+            handleLogin(new Event('submit'));
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const email = document.getElementById('emailInput').value.trim();
+            const pass = document.getElementById('passwordInput').value.trim();
+            const errAlert = document.getElementById('errorAlert');
+
+            if (!email || !pass) {
+                errAlert.style.display = 'flex';
+                document.getElementById('errorMessage').innerText = 'Please enter both your institutional email and password.';
+                return;
+            }
+
+            // Save user session
+            const userSession = {
+                email: email,
+                role: currentRole,
+                institution: "Nashik College of Engineering",
+                loginTime: new Date().toISOString()
+            };
+            sessionStorage.setItem('ecotrace_user', JSON.stringify(userSession));
+            localStorage.setItem('ecotrace_role', currentRole);
+
+            // Animate Button
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="spin" style="width:18px;"></i> Authenticating...`;
+            if (window.lucide) window.lucide.createIcons();
+
+            // Real Page Redirection to Dashboard!
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 500);
+        }
+
+        function quickForgot() {
+            alert("For demonstration: use any institutional email and password, or click one of the '1-Click Jury / Demo Login' buttons below.");
+        }
+    </script>
+</body>
+</html>

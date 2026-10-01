@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrace | NAAC & NIRF Institutional Green Audit Report</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        if (!sessionStorage.getItem('ecotrace_user')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <style>
+        .report-preview-sheet {
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+            max-width: 950px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .report-header-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #059669;
+            padding-bottom: 24px;
+            margin-bottom: 28px;
+        }
+
+        .report-header-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .report-header-brand img {
+            height: 56px;
+            object-fit: contain;
+        }
+
+        .report-title-block h2 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #064e3b;
+            margin: 0;
+        }
+
+        .report-title-block p {
+            color: #059669;
+            font-weight: 600;
+            font-size: 0.88rem;
+            margin: 2px 0 0 0;
+        }
+
+        .report-meta-badge {
+            text-align: right;
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+
+        .report-meta-badge strong {
+            color: #0f172a;
+            font-size: 0.95rem;
+            display: block;
+        }
+
+        .report-section {
+            margin-bottom: 32px;
+        }
+
+        .report-section-title {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #064e3b;
+            border-left: 4px solid #10b981;
+            padding-left: 12px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .report-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .rep-stat-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .rep-stat-lbl {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #166534;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rep-stat-val {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #14532d;
+            margin-top: 4px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            margin-top: 10px;
+        }
+
+        .report-table th {
+            background: #f8fafc;
+            color: #334155;
+            font-weight: 700;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .report-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+
+        .report-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .badge-naac {
+            display: inline-block;
+            background: #dcfce7;
+            color: #15803d;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+        }
+
+        .alert-box-warning {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: #92400e;
+            margin-bottom: 18px;
+        }
+
+        .report-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 53, 38, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: 16px;
+            padding: 18px 24px;
+            margin-bottom: 28px;
+        }
+
+        .action-info h4 {
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .action-info p {
+            color: #86efac;
+            font-size: 0.82rem;
+            margin: 3px 0 0 0;
+        }
+
+        .btn-download-pdf {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            font-weight: 700;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.92rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-download-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-forest">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <a href="dashboard.html" class="brand-logo" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; text-decoration: none;">
+                    <img src="assets/logo.png" alt="EcoTrace Logo" class="brand-img" style="height: 48px; object-fit: contain; border-radius: 8px; background: #ffffff; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
+                    <div class="brand-text">
+                        <h2 style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; margin: 0;">EcoTrace</h2>
+                        <span class="brand-sub" style="font-size: 0.72rem; color: #86efac; font-weight: 600; letter-spacing: 0.5px;">CARBON PULSE</span>
+                    </div>
+                </a>
+                
+                <div class="institution-selector">
+                    <div class="inst-info">
+                        <i data-lucide="building-2"></i>
+                        <span class="inst-name">Nashik College of Engg.</span>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <span class="nav-label">OVERVIEW</span>
+                    <a href="dashboard.html" class="nav-item">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="dashboard.html#analytics" class="nav-item">
+                        <i data-lucide="line-chart"></i>
+                        <span>Carbon Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">CAMPUS AUDIT</span>
+                    <a href="league.html" class="nav-item">
+                        <i data-lucide="trophy"></i>
+                        <span>Carbon League</span>
+                    </a>
+                    <a href="mess.html" class="nav-item">
+                        <i data-lucide="utensils"></i>
+                        <span>Mess & Food</span>
+                    </a>
+                    <a href="energy.html" class="nav-item">
+                        <i data-lucide="zap"></i>
+                        <span>Energy & Labs</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">TOOLS</span>
+                    <a href="scanner.html" class="nav-item">
+                        <i data-lucide="scan-line"></i>
+                        <span>Bill Scanner</span>
+                        <span class="badge-ocr">OCR</span>
+                    </a>
+                    <a href="simulator.html" class="nav-item">
+                        <i data-lucide="sliders"></i>
+                        <span>What-If Simulator</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">REPORTS</span>
+                    <a href="reports.html" class="nav-item active">
+                        <i data-lucide="file-badge-2"></i>
+                        <span>NAAC / NIRF Report</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sdg-badge">
+                    <i data-lucide="globe-2"></i>
+                    <span>UN SDG 13: Climate Action</span>
+                </div>
+                <div class="user-profile" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="avatar" id="sidebarAvatar">AD</div>
+                        <div class="user-info">
+                            <span class="user-name" id="sidebarUserName">Admin</span>
+                            <span class="user-role" id="sidebarUserRole">Campus Lead</span>
+                        </div>
+                    </div>
+                    <button onclick="logout()" title="Sign Out" style="background: none; border: none; color: #f87171; cursor: pointer; padding: 4px;">
+                        <i data-lucide="log-out" style="width: 18px;"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" id="mobileMenuBtn"><i data-lucide="menu"></i></button>
+                    <div>
+                        <h1 class="header-title">NAAC Criterion 7 & NIRF Institutional Green Audit</h1>
+                        <p class="header-subtitle">Statutory compliance reporting, greenhouse gas inventory & sustainability rating • <span class="tagline-highlight">"Measure. Understand. Reduce."</span></p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-emerald btn-sm" onclick="downloadOfficialReportLabPdf()">
+                        <i data-lucide="download"></i> Download Audit PDF
+                    </button>
+                </div>
+            </header>
+
+            <div class="dashboard-body" id="dashboardBody" style="padding-bottom: 60px;">
+                <!-- PDF Action Banner -->
+                <div class="report-actions-bar">
+                    <div class="action-info">
+                        <h4><i data-lucide="file-check-2" style="width: 18px; display: inline-block; vertical-align: middle; color: #4ade80;"></i> Official Report Ready for Download</h4>
+                        <p>Generated by EcoTrace ReportLab Engine • Certified for NAAC 7.1.2 & 7.1.6 and NIRF Green Ranking submissions</p>
+                    </div>
+                    <button class="btn-download-pdf" onclick="downloadOfficialReportLabPdf()">
+                        <i data-lucide="file-down"></i>
+                        <span>Export Certified PDF</span>
+                    </button>
+                </div>
+
+                <!-- Printable Green Audit Preview Sheet -->
+                <div class="report-preview-sheet" id="printableReport">
+                    <div class="report-header-banner">
+                        <div class="report-header-brand">
+                            <img src="assets/logo.png" alt="EcoTrace Official Logo">
+                            <div class="report-title-block">
+                                <h2>INSTITUTIONAL GREEN AUDIT REPORT</h2>
+                                <p>NAAC Criterion 7.1.2 / 7.1.6 & NIRF Ranking Sustainability Compliance</p>
+                            </div>
+                        </div>
+                        <div class="report-meta-badge">
+                            <strong>Academic Year 2026-27</strong>
+                            <span>Audit Date: September 2026</span><br>
+                            <span class="badge-naac" style="margin-top: 4px;">AISHE Code: C-41285</span>
+                        </div>
+                    </div>
+
+                    <!-- 1. Executive Summary -->
+                    <div class="report-section">
+                        <h3 class="report-section-title"><i data-lucide="compass" style="width: 18px;"></i> 1. Executive Sustainability Summary</h3>
+                        <p style="font-size: 0.92rem; line-height: 1.6; color: #475569; margin-bottom: 18px;">
+                            This comprehensive audit report assesses the greenhouse gas emissions (Scope 1, Scope 2, and Scope 3) generated by academic departments, laboratory complexes, hostel kitchens, and campus operations. Emission calculations adhere strictly to the Central Electricity Authority (CEA) CO₂ Baseline Database (Version 19) and UN Sustainable Development Goal 13.
+                        </p>
+
+                        <div class="report-summary-cards">
+                            <div class="rep-stat-box">
+                                <div class="rep-stat-lbl">Total Campus Emissions</div>
+                                <div class="rep-stat-val" id="repTotalEmissions">14,840 kg</div>
+                                <div style="font-size: 0.75rem; color: #16a34a; margin-top: 2px;">14.84 Metric Tonnes CO₂e</div>
+                            </div>
+                            <div class="rep-stat-box">
+                                <div class="rep-stat-lbl">Per Capita Footprint</div>
+                                <div class="rep-stat-val" id="repPerCapita">28.5 kg</div>
+                                <div style="font-size: 0.75rem; color: #16a34a; margin-top: 2px;">CO₂e per student / semester</div>
+                            </div>
+                            <div class="rep-stat-box">
+                                <div class="rep-stat-lbl">Primary Emission Driver</div>
+                                <div class="rep-stat-val" style="color: #d97706;">Electricity (71%)</div>
+                                <div style="font-size: 0.75rem; color: #b45309; margin-top: 2px;">Grid Factor: 0.71 kg/kWh</div>
+                            </div>
+                            <div class="rep-stat-box">
+                                <div class="rep-stat-lbl">NAAC Green Rating</div>
+                                <div class="rep-stat-val" style="color: #059669;">Grade A+</div>
+                                <div style="font-size: 0.75rem; color: #15803d; margin-top: 2px;">Top 10% in Maharashtra</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Departmental Carbon Inventory -->
+                    <div class="report-section">
+                        <h3 class="report-section-title"><i data-lucide="layers" style="width: 18px;"></i> 2. Departmental Greenhouse Gas Inventory (Scope 2)</h3>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Monthly kWh</th>
+                                    <th>Emissions (kg CO₂)</th>
+                                    <th>Monthly Energy Bill</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="repDeptTableBody">
+                                <tr>
+                                    <td><strong>Computer Engineering</strong></td>
+                                    <td>4,200 kWh</td>
+                                    <td>2,982 kg</td>
+                                    <td>₹48,300</td>
+                                    <td><span style="color: #059669; font-weight: 600;">Optimal</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Chemistry & Materials Lab</strong></td>
+                                    <td>3,000 kWh</td>
+                                    <td>2,130 kg</td>
+                                    <td>₹34,500</td>
+                                    <td><span style="color: #dc2626; font-weight: 700;">+42.9% Spike (Alert)</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Mechanical Engineering</strong></td>
+                                    <td>3,600 kWh</td>
+                                    <td>2,556 kg</td>
+                                    <td>₹41,400</td>
+                                    <td><span style="color: #059669; font-weight: 600;">Optimal</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hostel Mess & Kitchens</strong></td>
+                                    <td>2,800 kWh</td>
+                                    <td>1,988 kg</td>
+                                    <td>₹32,200</td>
+                                    <td><span style="color: #d97706; font-weight: 600;">Food Audit Required</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Central Campus Admin</strong></td>
+                                    <td>1,800 kWh</td>
+                                    <td>1,278 kg</td>
+                                    <td>₹20,700</td>
+                                    <td><span style="color: #059669; font-weight: 600;">Optimal</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 3. Key Findings & Anomaly Detection -->
+                    <div class="report-section">
+                        <h3 class="report-section-title"><i data-lucide="alert-triangle" style="width: 18px;"></i> 3. Statistical Anomaly & Energy Leakage Detection</h3>
+                        <div class="alert-box-warning">
+                            <strong><i data-lucide="alert-circle" style="width: 15px; display: inline;"></i> Critical Flag: Chemistry Lab Baseline Anomaly</strong><br>
+                            EcoTrace statistical engine detected a +42.9% surge (3,000 kWh vs 2,100 kWh baseline) with a Z-Score of <strong>6.1</strong>. Root cause analysis identified continuous operation of 4 laboratory exhaust fume hoods and HVAC cooling units overnight during student semester examinations.
+                        </div>
+                    </div>
+
+                    <!-- 4. Recommendations & Decarbonization Roadmap -->
+                    <div class="report-section">
+                        <h3 class="report-section-title"><i data-lucide="check-circle" style="width: 18px;"></i> 4. Decarbonization Action Plan (NAAC Metric 7.1.6)</h3>
+                        <ul style="font-size: 0.92rem; line-height: 1.8; color: #334155; padding-left: 20px;">
+                            <li><strong>Rooftop Solar PV Installation:</strong> Commission a 50 kWp rooftop solar plant generating approx. 6,000 kWh/month, offsetting 4,260 kg CO₂/month and saving ₹69,000 monthly.</li>
+                            <li><strong>Automated Laboratory HVAC Scheduling:</strong> Integrate smart timers and motion sensors in the Chemistry and Computing laboratories to eliminate off-hours idle loads.</li>
+                            <li><strong>Sustainable Mess Procurement (Green Mondays):</strong> Promote low-carbon plant-based meals in the hostel mess, reducing agricultural methane footprint by 28%.</li>
+                            <li><strong>LED Luminaire Transition:</strong> Replace all remaining 36W fluorescent tubes with high-efficiency 18W LED fittings across academic blocks.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Signatures Block -->
+                    <div style="display: flex; justify-content: space-between; margin-top: 48px; padding-top: 24px; border-top: 1px dashed #cbd5e1; font-size: 0.85rem; color: #64748b;">
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a;">Dr. S. K. Deshmukh</div>
+                            <div>Campus Sustainability Coordinator</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-weight: 700; color: #0f172a;">EcoTrace v1.0 AI Engine</div>
+                            <div>Verification ID: CEA-71-2026-OK</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 700; color: #0f172a;">Prof. V. N. Patil</div>
+                            <div>Principal / Head of Institution</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+    <script>
+        function logout() {
+            sessionStorage.clear();
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
+
+        const sessionUser = JSON.parse(sessionStorage.getItem('ecotrace_user') || '{}');
+        if (sessionUser.role) {
+            document.getElementById('sidebarUserName').innerText = sessionUser.role.toUpperCase();
+            document.getElementById('sidebarAvatar').innerText = sessionUser.role.substring(0, 2).toUpperCase();
+        }
+
+        function downloadOfficialReportLabPdf() {
+            showToast("Generating PDF", "Connecting to EcoTrace ReportLab engine...");
+            // Trigger direct download from the backend API
+            const downloadUrl = "http://127.0.0.1:8000/api/reports/naac-pdf";
+            window.open(downloadUrl, "_blank");
+        }
+
+        // Live fetch overview data if backend is available
+        async function loadReportData() {
+            try {
+                const res = await fetch("http://127.0.0.1:8000/api/overview");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.total_carbon_kg) {
+                        document.getElementById('repTotalEmissions').innerText = data.total_carbon_kg.toLocaleString() + " kg";
+                    }
+                    if (data.per_capita_carbon_kg) {
+                        document.getElementById('repPerCapita').innerText = data.per_capita_carbon_kg + " kg";
+                    }
+                }
+            } catch (e) {
+                console.log("Using cached audit figures:", e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) window.lucide.createIcons();
+            loadReportData();
+        });
+    </script>
+</body>
+</html>
