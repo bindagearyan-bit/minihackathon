@@ -5,9 +5,11 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Default to SQLite file 'carbon.db' in the current backend folder.
+# Default to SQLite file 'carbon.db' located in the backend folder.
 # If a remote database URL (such as Supabase PostgreSQL) is provided via environment variable, use that instead.
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./carbon.db")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+default_db_path = os.path.join(current_dir, "carbon.db").replace("\\", "/")
+DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{default_db_path}")
 
 # Supabase gives connection URLs starting with "postgres://", but SQLAlchemy 2.0 requires "postgresql://"
 if DATABASE_URL.startswith("postgres://"):

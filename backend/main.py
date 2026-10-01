@@ -2,6 +2,13 @@
 # Configures FastAPI, CORS for React frontend integration, database tables, and registers all routers.
 
 import os
+import sys
+
+# Ensure backend directory is in sys.path so imports work from root or inside backend
+backend_dir = os.path.dirname(os.path.abspath(__file__))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,9 +28,9 @@ from routers.tips import router as tips_router
 from fastapi.staticfiles import StaticFiles
 
 # Ensure storage directories exist for uploaded bills, reports, and static assets
-os.makedirs("uploads", exist_ok=True)
-os.makedirs("reports", exist_ok=True)
-os.makedirs("assets", exist_ok=True)
+os.makedirs(os.path.join(backend_dir, "uploads"), exist_ok=True)
+os.makedirs(os.path.join(backend_dir, "reports"), exist_ok=True)
+os.makedirs(os.path.join(backend_dir, "assets"), exist_ok=True)
 
 # Create database tables automatically on startup
 Base.metadata.create_all(bind=engine)
@@ -36,7 +43,7 @@ app = FastAPI(
 )
 
 # Serve static assets (such as the EcoTrace logo)
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+app.mount("/assets", StaticFiles(directory=os.path.join(backend_dir, "assets")), name="assets")
 
 # Configure CORS so the React frontend can seamlessly communicate with this API during hackathon demos
 app.add_middleware(
