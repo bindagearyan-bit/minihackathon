@@ -3,6 +3,11 @@
 
 import requests
 import json
+import sys
+
+# Ensure UTF-8 output so Rupee symbol (₹) prints cleanly on Windows terminals
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 BASE_URL = "http://127.0.0.1:8000"
 
