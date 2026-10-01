@@ -1,81 +1,93 @@
 # 🌿 EcoTrace | CARBONPULSE
-### Campus Carbon Footprint Auditor
+### Campus Carbon Footprint Auditor (UN SDG 13: Climate Action)
 
 > **"Measure. Understand. Reduce."**
-
-A premium SaaS-style web dashboard for Indian educational institutions to track, analyze, and reduce their campus carbon footprint. Built in support of **UN SDG 13 — Climate Action**.
+>
+> A campus sustainability & carbon footprint auditor for Indian educational institutions. Scans English, Marathi, and Hindi electricity bills, calculates CO₂ using CEA baseline factors, visualizes ₹ savings alongside carbon metrics, ranks departments fairly per student, and generates NAAC Criterion VII-ready sustainability reports.
 
 ---
 
-## 🚀 Features
+## 🏛️ Architecture Overview
+
+- **Frontend**: Premium SaaS dashboard built with HTML5, Vanilla CSS, and modern JavaScript with Chart.js, Lucide icons, responsive navigation, and hash-based SPA routing.
+- **Backend**: FastAPI (Python 3.10+), SQLite / Supabase PostgreSQL, SQLAlchemy, Tesseract OCR (multilingual: English / Marathi / Hindi), ReportLab PDF engine.
+
+---
+
+## 🚀 Key Features
 
 | Feature | Description |
 |---|---|
-| 📊 **KPI Dashboard** | Total CO₂e, per-student emission, energy cost & potential savings |
-| 📈 **Carbon Analytics** | Scope 1, 2 & 3 breakdowns with historical trend charts |
-| 🏆 **Carbon League** | Fair departmental leaderboard ranked by CO₂e **per student** |
-| 🔍 **OCR Bill Scanner** | Upload MSEDCL bills with Tesseract OCR (English / मराठी / हिन्दी) |
-| ⚡ **Anomaly Detection** | Statistical Z-score based energy anomaly alerts |
-| 🍱 **Mess Carbon Score** | Meal-level carbon intensity ratings with Green Day initiative |
-| 🎚️ **What-If Simulator** | Interactive sliders for PC shutdown, carpool & solar ROI |
-| ☀️ **Solar Timing Tip** | Smart scheduling recommendations for peak solar hours |
-| 🎯 **Recommendations** | AI-assisted actionable savings with simulate buttons |
-| 📋 **NAAC / NIRF Report** | One-click NAAC Criterion VII green audit PDF generator |
+| 📊 **KPI Dashboard** | Real-time Total CO₂e, per-student emission, energy expenditure & net reduction |
+| 📈 **Carbon Analytics** | Scope 1, Scope 2 & Scope 3 breakdowns with 6-month historical trends |
+| 🏆 **Carbon League** | Departmental leaderboard normalized fairly by student head-count |
+| 🔍 **OCR Bill Scanner** | Upload MSEDCL electricity bills with multilingual OCR extraction |
+| ⚡ **Anomaly Detection** | Statistical Z-score based anomaly alerts for night baseload & power spikes |
+| 🍱 **Mess Carbon Score** | Meal-level carbon intensity tracking with Green Day incentives |
+| 🎚️ **What-If Simulator** | Interactive real-time sliders for PC shutdown, EV carpooling & solar ROI |
+| ☀️ **Solar Timing Tip** | Intelligent load-shifting recommendations for peak solar generation hours |
+| 🎯 **Actionable Recommendations** | ROI-backed initiatives with direct one-click simulation links |
+| 📋 **NAAC / NIRF Reports** | One-click NAAC Criterion VII.1.2 Institutional Green Audit generator |
 
 ---
 
-## 🛠️ Tech Stack
-
-- **HTML5** — Semantic structure
-- **Vanilla CSS** — Custom design system with CSS variables
-- **Vanilla JavaScript** — Hash-based SPA routing, Chart.js charts, interactive simulations
-- **Chart.js** — Campus carbon trend (line), source breakdown (donut), anomaly (bar)
-- **Lucide Icons** — Clean icon system
-- **Tesseract OCR** *(backend-ready)* — Marathi / Hindi bill scanning workflow
-
----
-
-## 📁 File Structure
+## 📁 Repository Structure
 
 ```
 minihack/
-├── index.html       # Main SPA shell with all page views
-├── styles.css       # Full design system (dark forest-green SaaS theme)
-├── app.js           # Router, charts, OCR simulation, simulator logic
+├── index.html           # Main frontend SPA dashboard shell
+├── styles.css           # Custom design system (forest-green theme)
+├── app.js               # Client-side router, Chart.js integrations & simulators
+├── README.md            # Project documentation
+├── backend/             # FastAPI backend microservice
+│   ├── main.py          # FastAPI application entrypoint
+│   ├── models.py        # SQLAlchemy database models
+│   ├── schemas.py       # Pydantic schemas
+│   ├── seed.py          # Demo dataset seeder
+│   ├── test_api.py      # Automated endpoint test suite
+│   ├── requirements.txt # Python dependencies
+│   ├── routers/         # Modular API routes (bills, mess, whatif, etc.)
+│   └── services/        # Business logic (OCR, carbon calculation, PDF reports)
 └── .gitignore
 ```
 
 ---
 
-## 🎓 Context
-
-Designed for **D. Y. Patil College of Engineering** (demo institution) as a hackathon prototype for a campus-wide sustainability management platform.
-
-**The platform flow:**
-```
-DATA → MEASURE → ANALYZE → DETECT → RECOMMEND → SIMULATE → REDUCE → REPORT
-```
-
----
-
-## 🌍 UN SDG Alignment
-
-**SDG 13 — Climate Action**: Helps Indian educational institutions measure, track and actively reduce their institutional carbon footprint through data-driven decision making.
-
----
-
 ## 🚦 Getting Started
 
+### 1. Frontend Dashboard (Quick Preview)
+
+No build step required:
 ```bash
-# Serve locally (Python)
+# Serve locally with Python HTTP server
 python -m http.server 8080
-
-# Open in browser
-http://localhost:8080
 ```
+Open **http://localhost:8080** in your web browser.
 
-No build step required — pure HTML/CSS/JS.
+### 2. Backend API Service
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Seed demo database (6 months history + mess menu)
+python seed.py
+
+# Start the API server
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+Open **http://localhost:8000/docs** to test all interactive OpenAPI endpoints.
 
 ---
 
-*Built with ❤️ for Indian campus sustainability.*
+## 🌍 UN SDG & NAAC Alignment
+
+- **UN SDG 13 — Climate Action**: Facilitates real institutional carbon abatement through data transparency.
+- **NAAC Criterion VII**: Automated metrics and PDF documentation for Green Campus and Energy Audit compliance.
+
+---
+
+*Built for Indian Campus Sustainability.*
