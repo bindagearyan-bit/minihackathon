@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrace | CARBONPULSE - Campus Carbon Footprint Auditor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-forest">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand-container">
+                <div class="brand-logo">
+                    <div class="logo-icon">
+                        <i data-lucide="activity"></i>
+                        <span class="leaf-dot"><i data-lucide="leaf"></i></span>
+                    </div>
+                    <div class="brand-text">
+                        <h2>CARBONPULSE</h2>
+                        <span class="brand-sub">Campus Carbon Auditor</span>
+                    </div>
+                </div>
+                
+                <!-- Institution Selector Dropdown -->
+                <div class="institution-selector">
+                    <div class="inst-info">
+                        <i data-lucide="building-2"></i>
+                        <span class="inst-name">D. Y. Patil College</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="chevron"></i>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <span class="nav-label">OVERVIEW</span>
+                    <a href="#overview" class="nav-item active" data-page="overview">
+                        <i data-lucide="layout-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#analytics" class="nav-item" data-page="analytics">
+                        <i data-lucide="line-chart"></i>
+                        <span>Carbon Analytics</span>
+                    </a>
+                    <a href="#sources" class="nav-item" data-page="sources">
+                        <i data-lucide="pie-chart"></i>
+                        <span>Carbon Sources</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">CAMPUS</span>
+                    <a href="#departments" class="nav-item" data-page="departments">
+                        <i data-lucide="building"></i>
+                        <span>Departments</span>
+                    </a>
+                    <a href="#league" class="nav-item" data-page="league">
+                        <i data-lucide="trophy"></i>
+                        <span>Carbon League</span>
+                    </a>
+                    <a href="#mess" class="nav-item" data-page="mess">
+                        <i data-lucide="utensils"></i>
+                        <span>Mess Carbon</span>
+                    </a>
+                    <a href="#energy" class="nav-item" data-page="energy">
+                        <i data-lucide="zap"></i>
+                        <span>Energy & Labs</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">TOOLS</span>
+                    <a href="#scanner" class="nav-item" data-page="scanner">
+                        <i data-lucide="scan-line"></i>
+                        <span>Bill Scanner</span>
+                        <span class="badge-ocr">OCR</span>
+                    </a>
+                    <a href="#simulator" class="nav-item" data-page="simulator">
+                        <i data-lucide="sliders"></i>
+                        <span>What-If Simulator</span>
+                    </a>
+                    <a href="#recommendations" class="nav-item" data-page="recommendations">
+                        <i data-lucide="sparkles"></i>
+                        <span>Recommendations</span>
+                    </a>
+                </div>
+
+                <div class="nav-group">
+                    <span class="nav-label">REPORTS</span>
+                    <a href="#naac" class="nav-item" data-page="naac">
+                        <i data-lucide="file-badge-2"></i>
+                        <span>NAAC / NIRF Report</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="footer-links">
+                    <a href="#settings" class="footer-item" onclick="showToast('Settings', 'Campus configuration saved.')"><i data-lucide="settings"></i> Settings</a>
+                    <a href="#help" class="footer-item" onclick="showToast('Support', 'Contacting sustainability helpdesk.')"><i data-lucide="help-circle"></i> Help & Support</a>
+                </div>
+                <div class="sdg-badge">
+                    <i data-lucide="globe-2"></i>
+                    <span>UN SDG 13: Climate Action</span>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">AD</div>
+                    <div class="user-info">
+                        <span class="user-name">Admin</span>
+                        <span class="user-role">Campus Sustainability Admin</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Wrapper -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div>
+                        <h1 class="header-title" id="pageTitle">Campus Overview</h1>
+                        <p class="header-subtitle" id="pageSubtitle">Carbon footprint and sustainability performance • <span class="tagline-highlight">"Measure. Understand. Reduce."</span></p>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <div class="month-selector">
+                        <i data-lucide="calendar"></i>
+                        <select id="globalMonthSelect">
+                            <option value="sep2026">September 2026</option>
+                            <option value="aug2026">August 2026</option>
+                            <option value="jul2026">July 2026</option>
+                        </select>
+                    </div>
+
+                    <div class="notifications-btn" title="Notifications" onclick="showToast('Notifications', '3 operational alerts logged this week.')">
+                        <i data-lucide="bell"></i>
+                        <span class="dot-indicator"></span>
+                    </div>
+
+                    <div class="dropdown-wrapper">
+                        <button class="btn btn-primary" id="addDataBtn" onclick="toggleAddDataDropdown()">
+                            <i data-lucide="plus"></i>
+                            <span>+ Add Carbon Data</span>
+                        </button>
+                        <div class="dropdown-menu hidden" id="addDataDropdown">
+                            <a href="#scanner" class="dropdown-item" onclick="navigateToPage('scanner')"><i data-lucide="file-text"></i> Upload MSEDCL Bill</a>
+                            <a href="#" class="dropdown-item" onclick="openManualInputModal('electricity')"><i data-lucide="zap"></i> Electricity Log</a>
+                            <a href="#" class="dropdown-item" onclick="openManualInputModal('transport')"><i data-lucide="bus"></i> Transport Log</a>
+                            <a href="#" class="dropdown-item" onclick="openManualInputModal('food')"><i data-lucide="utensils"></i> Mess / Food Log</a>
+                            <a href="#" class="dropdown-item" onclick="openManualInputModal('computing')"><i data-lucide="cpu"></i> Computer Labs</a>
+                        </div>
+                    </div>
+
+                    <div class="user-avatar-sm">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Admin Avatar">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Body: Multi-Page Views Container -->
+            <div class="dashboard-body" id="dashboardBody">
+
+                <!-- PAGE 1: OVERVIEW PAGE -->
+                <section class="page-view" id="page-overview">
+                    <!-- Top KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span class="kpi-label">TOTAL CARBON FOOTPRINT</span>
+                                <div class="kpi-icon icon-emerald"><i data-lucide="cloud-rain"></i></div>
+                            </div>
+                            <div class="kpi-value-row">
+                                <h2 class="kpi-value" id="kpiTotalCarbon">24,850 <span class="unit">kg CO₂e</span></h2>
+                            </div>
+                            <div class="kpi-footer">
+                                <span class="kpi-badge badge-success"><i data-lucide="arrow-down-right"></i> 8.4%</span>
+                                <span class="kpi-subtext">vs last month (27,130 kg)</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span class="kpi-label">CARBON / STUDENT</span>
+                                <div class="kpi-icon icon-teal"><i data-lucide="user-check"></i></div>
+                            </div>
+                            <div class="kpi-value-row">
+                                <h2 class="kpi-value" id="kpiPerCapita">18.4 <span class="unit">kg CO₂e</span></h2>
+                            </div>
+                            <div class="kpi-footer">
+                                <span class="kpi-badge badge-neutral"><i data-lucide="users"></i> 1,350 Students</span>
+                                <span class="kpi-subtext">Per capita monthly emission</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-header">
+                                <span class="kpi-label">ENERGY COST</span>
+                                <div class="kpi-icon icon-amber"><i data-lucide="indian-rupee"></i></div>
+                            </div>
+                            <div class="kpi-value-row">
+                                <h2 class="kpi-value" id="kpiEnergyCost">₹1,24,850</h2>
+                            </div>
+                            <div class="kpi-footer">
+                                <span class="kpi-badge badge-success"><i data-lucide="arrow-down-right"></i> 6.2%</span>
+                                <span class="kpi-subtext">Estimated monthly energy cost</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card highlight-card">
+                            <div class="kpi-header">
+                                <span class="kpi-label">POTENTIAL SAVINGS</span>
+                                <div class="kpi-icon icon-green"><i data-lucide="piggy-bank"></i></div>
+                            </div>
+                            <div class="kpi-value-row">
+                                <h2 class="kpi-value text-emerald" id="kpiPotentialSavings">₹38,400 <span class="sub-freq">/mo</span></h2>
+                            </div>
+                            <div class="kpi-footer">
+                                <span class="kpi-badge badge-emerald"><i data-lucide="leaf"></i> 1,650 kg CO₂e</span>
+                                <span class="kpi-subtext">Identified through recommendations</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Analytics & Quick Preview Grid -->
+                    <div class="grid-2-col" style="margin-top: 24px;">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title">Campus Carbon Trend</h3>
+                                    <p class="card-subtitle">Monthly CO₂e emissions and financial correlation</p>
+                                </div>
+                                <button class="btn btn-sm btn-outline-emerald" onclick="navigateToPage('analytics')">
+                                    Full Analytics <i data-lucide="arrow-right"></i>
+                                </button>
+                            </div>
+                            <div class="insight-bar">
+                                <span class="badge badge-success"><i data-lucide="trending-down"></i> ↓ 8.4% reduction this month</span>
+                                <span class="insight-text">Campus on track for 15% annual reduction target under SDG 13.</span>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="heroTrendChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="card breakdown-card">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title">Carbon Source Overview</h3>
+                                    <p class="card-subtitle">Scope 1, 2 & 3 distribution</p>
+                                </div>
+                                <button class="btn btn-sm btn-outline-emerald" onclick="navigateToPage('sources')">
+                                    Source Details <i data-lucide="arrow-right"></i>
+                                </button>
+                            </div>
+                            <div class="donut-flex-container">
+                                <div class="donut-wrapper">
+                                    <canvas id="sourcesDonutChart"></canvas>
+                                    <div class="donut-center-text">
+                                        <span class="total-val">24.8t</span>
+                                        <span class="total-lbl">CO₂e Total</span>
+                                    </div>
+                                </div>
+                                <div class="breakdown-list">
+                                    <div class="breakdown-item">
+                                        <div class="item-color col-electricity"></div>
+                                        <div class="item-info">
+                                            <div class="item-name-row"><span class="item-name">Electricity</span><span class="item-pct">48%</span></div>
+                                            <div class="item-stats"><span class="item-co2">11,928 kg</span><span class="item-cost">₹82,400</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <div class="item-color col-transport"></div>
+                                        <div class="item-info">
+                                            <div class="item-name-row"><span class="item-name">Transportation</span><span class="item-pct">27%</span></div>
+                                            <div class="item-stats"><span class="item-co2">6,709 kg</span><span class="item-cost">₹28,500</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <div class="item-color col-food"></div>
+                                        <div class="item-info">
+                                            <div class="item-name-row"><span class="item-name">Food / Mess</span><span class="item-pct">17%</span></div>
+                                            <div class="item-stats"><span class="item-co2">4,224 kg</span><span class="item-cost">₹14,200</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="breakdown-item">
+                                        <div class="item-color col-computing"></div>
+                                        <div class="item-info">
+                                            <div class="item-name-row"><span class="item-name">Computing</span><span class="item-pct">8%</span></div>
+                                            <div class="item-stats"><span class="item-co2">1,989 kg</span><span class="item-cost">₹6,400</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cost-connection-banner" style="margin-top: 20px;">
+                                <div class="banner-icons">
+                                    <span class="badge-icon icon-rupee">₹</span>
+                                    <span class="badge-icon icon-co2">CO₂</span>
+                                </div>
+                                <div class="banner-content">
+                                    <h4>Carbon has a cost.</h4>
+                                    <p>Reducing energy waste can reduce both emissions and campus operating expenses.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Tools Shortcuts Banner -->
+                    <div class="quick-tools-grid" style="margin-top: 24px;">
+                        <div class="tool-shortcut-card" onclick="navigateToPage('scanner')">
+                            <i data-lucide="scan-text"></i>
+                            <div>
+                                <h4>MSEDCL Bill Scanner</h4>
+                                <p>Upload electricity bill & extract CO₂ instantly via Marathi/Hindi OCR</p>
+                            </div>
+                        </div>
+
+                        <div class="tool-shortcut-card" onclick="navigateToPage('simulator')">
+                            <i data-lucide="sliders"></i>
+                            <div>
+                                <h4>What-If Simulator</h4>
+                                <p>Simulate PC shutdowns, solar capacity & carpooling impact</p>
+                            </div>
+                        </div>
+
+                        <div class="tool-shortcut-card" onclick="navigateToPage('league')">
+                            <i data-lucide="trophy"></i>
+                            <div>
+                                <h4>Carbon League</h4>
+                                <p>Fair departmental leaderboard ranked by CO₂e per student</p>
+                            </div>
+                        </div>
+
+                        <div class="tool-shortcut-card" onclick="navigateToPage('naac')">
+                            <i data-lucide="file-badge-2"></i>
+                            <div>
+                                <h4>NAAC / NIRF Report</h4>
+                                <p>Generate green audit compliance report in one click</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 2: CARBON ANALYTICS PAGE -->
+                <section class="page-view hidden" id="page-analytics">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">Comprehensive Carbon Analytics</h3>
+                                <p class="card-subtitle">Detailed metric tracking, per-capita emissions, and financial analysis</p>
+                            </div>
+                            <div class="chart-controls">
+                                <div class="btn-group toggle-group" id="analyticsMetricToggle">
+                                    <button class="btn-toggle active" data-metric="total">Total CO₂e</button>
+                                    <button class="btn-toggle" data-metric="student">CO₂e / Student</button>
+                                    <button class="btn-toggle" data-metric="cost">Energy Cost (₹)</button>
+                                </div>
+                                <div class="btn-group timeframe-group" id="analyticsTimeframe">
+                                    <button class="btn-time active" data-range="3m">3M</button>
+                                    <button class="btn-time" data-range="6m">6M</button>
+                                    <button class="btn-time" data-range="1y">1Y</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="insight-bar">
+                            <span class="badge badge-success"><i data-lucide="trending-down"></i> ↓ 8.4% reduction this month</span>
+                            <span class="insight-text">Comparing current monthly emissions against historical college baseline.</span>
+                        </div>
+                        <div class="chart-container" style="height: 360px;">
+                            <canvas id="pageAnalyticsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Scope 1, 2, 3 Grid -->
+                    <div class="grid-3-col" style="margin-top: 24px;">
+                        <div class="card">
+                            <div class="card-header border-b">
+                                <h4 class="card-title text-emerald"><i data-lucide="flame"></i> Scope 1 (Direct)</h4>
+                                <span class="badge badge-success">4,224 kg</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">Direct emissions from campus canteen LPG gas, generators, and institutional vehicles.</p>
+                            <div class="stat-mini-row" style="margin-top: 14px;">
+                                <span>Mess LPG: <strong>2,850 kg</strong></span>
+                                <span>Diesel Genset: <strong>1,374 kg</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header border-b">
+                                <h4 class="card-title text-emerald"><i data-lucide="zap"></i> Scope 2 (Indirect Grid)</h4>
+                                <span class="badge badge-success">11,928 kg</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">Grid electricity purchased from MSEDCL based on 0.71 kg CO₂e/kWh emission factor.</p>
+                            <div class="stat-mini-row" style="margin-top: 14px;">
+                                <span>Grid Power: <strong>16,800 kWh</strong></span>
+                                <span>Est. Cost: <strong>₹82,400</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header border-b">
+                                <h4 class="card-title text-emerald"><i data-lucide="bus"></i> Scope 3 (Commute & IT)</h4>
+                                <span class="badge badge-success">8,698 kg</span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">Student & staff transport commute, campus server labs, and waste generation.</p>
+                            <div class="stat-mini-row" style="margin-top: 14px;">
+                                <span>Transport: <strong>6,709 kg</strong></span>
+                                <span>IT Labs: <strong>1,989 kg</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 3: CARBON SOURCES PAGE -->
+                <section class="page-view hidden" id="page-sources">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">Carbon Source Distribution</h3>
+                                <p class="card-subtitle">Granular operational source breakdown for D. Y. Patil College</p>
+                            </div>
+                        </div>
+                        <div class="grid-2-col" style="margin-top: 16px;">
+                            <div class="donut-wrapper" style="width: 260px; height: 260px; margin: 0 auto;">
+                                <canvas id="pageSourcesDonutChart"></canvas>
+                            </div>
+                            <div class="breakdown-list" style="gap: 16px;">
+                                <div class="breakdown-item card" style="padding: 16px;">
+                                    <div class="item-color col-electricity" style="width: 16px; height: 16px;"></div>
+                                    <div class="item-info">
+                                        <div class="item-name-row"><strong style="font-size: 1rem;">Electricity (MSEDCL Grid)</strong><span class="item-pct" style="font-size: 1rem;">48%</span></div>
+                                        <div class="item-stats" style="margin-top: 6px;"><span class="item-co2">11,928 kg CO₂e</span><span class="item-cost">₹82,400 / month</span></div>
+                                    </div>
+                                </div>
+                                <div class="breakdown-item card" style="padding: 16px;">
+                                    <div class="item-color col-transport" style="width: 16px; height: 16px;"></div>
+                                    <div class="item-info">
+                                        <div class="item-name-row"><strong style="font-size: 1rem;">Transportation & Commute</strong><span class="item-pct" style="font-size: 1rem;">27%</span></div>
+                                        <div class="item-stats" style="margin-top: 6px;"><span class="item-co2">6,709 kg CO₂e</span><span class="item-cost">₹28,500 / month</span></div>
+                                    </div>
+                                </div>
+                                <div class="breakdown-item card" style="padding: 16px;">
+                                    <div class="item-color col-food" style="width: 16px; height: 16px;"></div>
+                                    <div class="item-info">
+                                        <div class="item-name-row"><strong style="font-size: 1rem;">Mess & Canteen Food</strong><span class="item-pct" style="font-size: 1rem;">17%</span></div>
+                                        <div class="item-stats" style="margin-top: 6px;"><span class="item-co2">4,224 kg CO₂e</span><span class="item-cost">₹14,200 / month</span></div>
+                                    </div>
+                                </div>
+                                <div class="breakdown-item card" style="padding: 16px;">
+                                    <div class="item-color col-computing" style="width: 16px; height: 16px;"></div>
+                                    <div class="item-info">
+                                        <div class="item-name-row"><strong style="font-size: 1rem;">Computer Labs & Servers</strong><span class="item-pct" style="font-size: 1rem;">8%</span></div>
+                                        <div class="item-stats" style="margin-top: 6px;"><span class="item-co2">1,989 kg CO₂e</span><span class="item-cost">₹6,400 / month</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 4: DEPARTMENTS & CARBON LEAGUE PAGE -->
+                <section class="page-view hidden" id="page-league">
+                    <div class="card league-card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title"><i data-lucide="trophy" class="text-amber"></i> Carbon League Leaderboard</h3>
+                                <p class="card-subtitle">Fair departmental comparison based on CO₂e per student</p>
+                            </div>
+                            <span class="league-month-tag">September 2026 Ranking</span>
+                        </div>
+
+                        <div class="league-info-banner">
+                            <i data-lucide="shield-alert"></i>
+                            <span>Departments are ranked fairly by <strong>CO₂e per student</strong> (not total emissions), giving smaller and larger departments equal grounds.</span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="league-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Department</th>
+                                        <th>Students</th>
+                                        <th>CO₂e / Student</th>
+                                        <th>Monthly Change</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leagueTableBodyPage">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Department Cards Grid -->
+                    <div class="grid-3-col" style="margin-top: 24px;" id="deptCardsGrid">
+                        <!-- JS populated -->
+                    </div>
+                </section>
+
+                <!-- PAGE 5: MESS CARBON PAGE -->
+                <section class="page-view hidden" id="page-mess">
+                    <div class="card mess-card">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title"><i data-lucide="utensils" class="text-emerald"></i> Mess & Food Carbon Score</h3>
+                                <p class="card-subtitle">Understand and optimize the carbon impact of campus meals</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline-emerald" id="greenDayBtnPage" onclick="toggleGreenDay()">
+                                <i data-lucide="sparkles"></i> Green Day Active
+                            </button>
+                        </div>
+
+                        <div class="mess-body">
+                            <div class="meal-cards-grid">
+                                <div class="meal-card border-low">
+                                    <div class="meal-header">
+                                        <span class="meal-name">Veg Thali</span>
+                                        <span class="badge badge-success">LOW</span>
+                                    </div>
+                                    <div class="meal-co2">0.45 <span class="unit">kg CO₂e</span></div>
+                                    <p class="meal-desc">Local seasonal veggies, rice, dal & roti</p>
+                                </div>
+
+                                <div class="meal-card border-low">
+                                    <div class="meal-header">
+                                        <span class="meal-name">Masala Dosa</span>
+                                        <span class="badge badge-success">LOW</span>
+                                    </div>
+                                    <div class="meal-co2">0.38 <span class="unit">kg CO₂e</span></div>
+                                    <p class="meal-desc">Fermented rice batter with potato bhaji</p>
+                                </div>
+
+                                <div class="meal-card border-med">
+                                    <div class="meal-header">
+                                        <span class="meal-name">Paneer Butter Masala</span>
+                                        <span class="badge badge-warning">MED</span>
+                                    </div>
+                                    <div class="meal-co2">1.12 <span class="unit">kg CO₂e</span></div>
+                                    <p class="meal-desc">Dairy intensive gravy meal with naan</p>
+                                </div>
+
+                                <div class="meal-card border-high">
+                                    <div class="meal-header">
+                                        <span class="meal-name">Chicken Biryani</span>
+                                        <span class="badge badge-danger">HIGH</span>
+                                    </div>
+                                    <div class="meal-co2">2.75 <span class="unit">kg CO₂e</span></div>
+                                    <p class="meal-desc">Poultry supply chain & high energy cooking</p>
+                                </div>
+                            </div>
+
+                            <div class="weekly-mess-schedule" style="margin-top: 24px;">
+                                <h5>Weekly Mess Carbon Intensity Schedule:</h5>
+                                <div class="days-row" style="margin-top: 10px;">
+                                    <div class="day-pill med">Mon <span class="dot"></span> Medium</div>
+                                    <div class="day-pill high">Tue <span class="dot"></span> High</div>
+                                    <div class="day-pill low active-green">Wed <span class="dot"></span> Low (Green Day)</div>
+                                    <div class="day-pill med">Thu <span class="dot"></span> Medium</div>
+                                    <div class="day-pill low">Fri <span class="dot"></span> Low</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 6: ENERGY & LABS PAGE -->
+                <section class="page-view hidden" id="page-energy">
+                    <div class="grid-2-col-equal">
+                        <!-- Energy Anomaly Alert -->
+                        <div class="card anomaly-card">
+                            <div class="card-header border-b">
+                                <div class="anomaly-header">
+                                    <span class="pulse-alert-dot"></span>
+                                    <h3 class="card-title text-amber">Energy Anomaly Detected</h3>
+                                </div>
+                                <span class="badge badge-warning">Statistical Anomaly</span>
+                            </div>
+
+                            <div class="anomaly-body">
+                                <div class="anomaly-target">
+                                    <div class="target-icon"><i data-lucide="flask-conical"></i></div>
+                                    <div class="target-details">
+                                        <h4>Chemistry Lab</h4>
+                                        <p class="anomaly-msg">"The Chemistry lab used 42% more power than its 3-month average."</p>
+                                    </div>
+                                </div>
+
+                                <div class="anomaly-stats-grid">
+                                    <div class="stat-box"><span class="lbl">Current</span><span class="val">14,200 <small>kWh</small></span></div>
+                                    <div class="stat-box"><span class="lbl">3-Mo Avg</span><span class="val">10,000 <small>kWh</small></span></div>
+                                    <div class="stat-box"><span class="lbl">Deviation</span><span class="val text-danger">+42%</span></div>
+                                    <div class="stat-box"><span class="lbl">Z-Score</span><span class="val text-warning">2.3</span></div>
+                                </div>
+
+                                <div class="anomaly-footer">
+                                    <button class="btn btn-warning w-full" onclick="openAnomalyInvestigationModal()">
+                                        <i data-lucide="search"></i> Investigate Anomaly
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Solar Timing Tip Card -->
+                        <div class="card solar-tip-card">
+                            <div class="card-header border-b">
+                                <div class="solar-title">
+                                    <i data-lucide="sun" class="text-amber"></i>
+                                    <h3 class="card-title">Solar Timing Tip</h3>
+                                </div>
+                                <span class="badge badge-amber">Smart Scheduling</span>
+                            </div>
+                            <div class="solar-body">
+                                <div class="solar-hero-box">
+                                    <h4>☀ Run heavy campus tasks between <strong>11 AM – 3 PM</strong></h4>
+                                    <p class="solar-desc">Schedule high-power equipment during peak solar generation hours to cut grid tariff charges.</p>
+                                </div>
+
+                                <div class="solar-timing-graphic">
+                                    <div class="timeline-bar">
+                                        <span class="time-mark">8 AM</span>
+                                        <div class="window-highlight">
+                                            <i data-lucide="sun" class="sun-icon"></i>
+                                            <span>11 AM — 3 PM</span>
+                                            <span class="sub">Recommended Window</span>
+                                        </div>
+                                        <span class="time-mark">6 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="recommended-activities">
+                                    <h5>Recommended Equipment:</h5>
+                                    <div class="activity-tags">
+                                        <span class="act-tag"><i data-lucide="server"></i> Lab Servers</span>
+                                        <span class="act-tag"><i data-lucide="droplets"></i> Water Pumps</span>
+                                        <span class="act-tag"><i data-lucide="shirt"></i> Hostel Laundry</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 7: BILL SCANNER PAGE -->
+                <section class="page-view hidden" id="page-scanner">
+                    <div class="card bill-scanner-card">
+                        <div class="card-header border-b">
+                            <div class="scanner-header-title">
+                                <h3 class="card-title"><i data-lucide="scan-text" class="text-emerald"></i> Scan Electricity Bill</h3>
+                                <p class="card-subtitle">Upload an MSEDCL electricity bill to calculate CO₂ instantly</p>
+                            </div>
+                            <div class="lang-selector">
+                                <span class="ocr-badge"><i data-lucide="cpu"></i> Tesseract OCR</span>
+                                <div class="lang-pills" id="ocrLangPillsPage">
+                                    <button class="lang-pill active" data-lang="en">English</button>
+                                    <button class="lang-pill" data-lang="mr">मराठी</button>
+                                    <button class="lang-pill" data-lang="hi">हिन्दी</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="scanner-body">
+                            <!-- Default Dropzone -->
+                            <div class="upload-dropzone" id="billDropzonePage" onclick="triggerFileInput()">
+                                <input type="file" id="billFileInputPage" accept="image/*,.pdf" style="display: none;" onchange="handleBillUpload(event)">
+                                <div class="upload-icon-wrapper">
+                                    <i data-lucide="file-up"></i>
+                                </div>
+                                <div class="upload-instructions">
+                                    <span class="upload-primary">[ Upload MSEDCL Bill ]</span>
+                                    <span class="upload-secondary">Drag & drop or click to browse (JPG, PNG, PDF supported)</span>
+                                    <div class="supported-tags">
+                                        <span>MSEDCL Format</span>
+                                        <span>Marathi/Hindi OCR</span>
+                                        <span>Instant CO₂ Factor</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Scanning Progress State -->
+                            <div class="ocr-progress-container hidden" id="ocrProgressContainerPage">
+                                <div class="progress-step-indicator">
+                                    <div class="step step-active" id="step1Page">1. Uploading</div>
+                                    <div class="step" id="step2Page">2. OCR Processing</div>
+                                    <div class="step" id="step3Page">3. Extracting Units</div>
+                                    <div class="step" id="step4Page">4. Calculating CO₂</div>
+                                </div>
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" id="ocrProgressBarPage"></div>
+                                </div>
+                                <div class="scanner-status-text" id="ocrStatusTextPage">Reading bill text in Marathi / English...</div>
+                            </div>
+
+                            <!-- WOW Moment OCR Result Card -->
+                            <div class="ocr-result-card hidden" id="ocrResultCardPage">
+                                <div class="result-badge-success">
+                                    <i data-lucide="check-circle-2"></i> Bill analyzed successfully
+                                </div>
+                                <div class="result-layout">
+                                    <div class="bill-preview-box">
+                                        <div class="bill-doc-thumbnail">
+                                            <div class="doc-header">MSEDCL</div>
+                                            <div class="doc-line"></div>
+                                            <div class="doc-line short"></div>
+                                            <div class="doc-box">12,500 kWh</div>
+                                        </div>
+                                        <span class="doc-name">MSEDCL_Sep2026.pdf</span>
+                                    </div>
+
+                                    <div class="result-details">
+                                        <ul class="verification-checks">
+                                            <li><i data-lucide="check"></i> Billing month detected: <strong>September 2026</strong></li>
+                                            <li><i data-lucide="check"></i> Units consumed detected: <strong>12,500 kWh</strong></li>
+                                            <li><i data-lucide="check"></i> Marathi / Hindi OCR processed via Tesseract</li>
+                                            <li><i data-lucide="check"></i> Grid Emission Factor applied: <strong>0.71 kg CO₂e/kWh</strong></li>
+                                        </ul>
+
+                                        <div class="big-emission-result">
+                                            <div class="val">8,875 <span class="unit">kg CO₂e</span></div>
+                                            <div class="desc">Calculated footprint for 12,500 kWh • Est. Cost: ₹88,750</div>
+                                        </div>
+
+                                        <div class="result-actions">
+                                            <button class="btn btn-emerald" onclick="confirmAddBillToFootprint()">
+                                                <i data-lucide="plus-circle"></i> Add to Campus Footprint
+                                            </button>
+                                            <button class="btn btn-secondary" onclick="resetBillScanner()">
+                                                Scan Another Bill
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 8: WHAT-IF SIMULATOR PAGE -->
+                <section class="page-view hidden" id="page-simulator">
+                    <div class="card simulator-card">
+                        <div class="card-header border-b">
+                            <div>
+                                <h3 class="card-title"><i data-lucide="sliders" class="text-emerald"></i> What-If Simulator</h3>
+                                <p class="card-subtitle">See how campus operational decisions impact carbon emissions and budget instantly</p>
+                            </div>
+                            <div class="sim-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="resetSimulator()">Reset</button>
+                                <button class="btn btn-emerald btn-sm" onclick="applySimulatorScenario()">Apply Scenario</button>
+                            </div>
+                        </div>
+
+                        <div class="simulator-body">
+                            <div class="sim-sliders-column">
+                                <div class="slider-group">
+                                    <div class="slider-header">
+                                        <label for="sliderPcTimePage"><i data-lucide="laptop"></i> Lab PC Shutdown Time</label>
+                                        <span class="slider-val" id="valPcTimePage">6 PM (Automatic)</span>
+                                    </div>
+                                    <input type="range" id="sliderPcTimePage" min="6" max="9" step="1" value="6" oninput="updateSimulator()">
+                                    <div class="slider-ticks">
+                                        <span>6 PM</span>
+                                        <span>7 PM</span>
+                                        <span>8 PM</span>
+                                        <span>9 PM</span>
+                                    </div>
+                                    <div class="sim-calculated-pill">
+                                        <span>Saves: <strong id="simPcSavesKwhPage">1,800 kWh</strong></span> • 
+                                        <span class="text-emerald"><strong id="simPcSavesCostPage">₹14,400/mo</strong></span> • 
+                                        <span><strong id="simPcSavesCo2Page">1,278 kg CO₂e/mo</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="slider-group">
+                                    <div class="slider-header">
+                                        <label for="sliderCarpoolPage"><i data-lucide="car"></i> Students Carpooling Share</label>
+                                        <span class="slider-val" id="valCarpoolPage">25%</span>
+                                    </div>
+                                    <input type="range" id="sliderCarpoolPage" min="0" max="40" step="5" value="25" oninput="updateSimulator()">
+                                    <div class="slider-ticks">
+                                        <span>0%</span>
+                                        <span>10%</span>
+                                        <span>20%</span>
+                                        <span>30%</span>
+                                        <span>40%</span>
+                                    </div>
+                                    <div class="sim-calculated-pill">
+                                        <span>CO₂ Saved: <strong id="simCarpoolCo2Page">1,250 kg/mo</strong></span> • 
+                                        <span class="text-emerald">Money Saved: <strong id="simCarpoolCostPage">₹12,500/mo</strong></span>
+                                    </div>
+                                </div>
+
+                                <div class="slider-group">
+                                    <div class="slider-header">
+                                        <label for="sliderSolarPage"><i data-lucide="sun"></i> Rooftop Solar Capacity</label>
+                                        <span class="slider-val" id="valSolarPage">50 kW</span>
+                                    </div>
+                                    <input type="range" id="sliderSolarPage" min="0" max="100" step="25" value="50" oninput="updateSimulator()">
+                                    <div class="slider-ticks">
+                                        <span>0 kW</span>
+                                        <span>25 kW</span>
+                                        <span>50 kW</span>
+                                        <span>100 kW</span>
+                                    </div>
+                                    <div class="sim-calculated-pill">
+                                        <span>CO₂ Annual Reduction: <strong id="simSolarCo2Page">15,000 kg/yr</strong></span> • 
+                                        <span>Est. Payback: <strong id="simSolarPaybackPage">3.2 years</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sim-results-column">
+                                <div class="before-after-box">
+                                    <div class="sim-stat-block">
+                                        <span class="lbl">CURRENT FOOTPRINT</span>
+                                        <span class="val">24,850 <small>kg CO₂e</small></span>
+                                    </div>
+
+                                    <div class="sim-arrow"><i data-lucide="arrow-down"></i></div>
+
+                                    <div class="sim-stat-block highlight-sim">
+                                        <span class="lbl">SIMULATED FOOTPRINT</span>
+                                        <span class="val text-emerald" id="simulatedFootprintValPage">21,450 <small>kg CO₂e</small></span>
+                                    </div>
+
+                                    <div class="sim-arrow"><i data-lucide="arrow-down"></i></div>
+
+                                    <div class="sim-stat-block reduction-block">
+                                        <span class="lbl">TOTAL POTENTIAL REDUCTION</span>
+                                        <span class="val text-success" id="simulatedReductionValPage">3,400 <small>kg CO₂e / mo</small></span>
+                                        <span class="sub-cost text-emerald" id="simulatedCostReductionValPage">Savings: ₹38,400 / month</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 9: RECOMMENDATIONS PAGE -->
+                <section class="page-view hidden" id="page-recommendations">
+                    <div class="card recommendations-card">
+                        <div class="card-header border-b">
+                            <div>
+                                <h3 class="card-title"><i data-lucide="sparkles" class="text-emerald"></i> Recommended Actions</h3>
+                                <p class="card-subtitle">AI & analytics driven high-impact measures to cut emissions and operating cost</p>
+                            </div>
+                        </div>
+
+                        <div class="rec-list" style="margin-top: 16px;">
+                            <div class="rec-item">
+                                <div class="rec-content">
+                                    <span class="rec-tag tag-lab">LAB ENERGY</span>
+                                    <h4>Computer labs remain active after 6 PM</h4>
+                                    <p class="rec-action">Enable automatic shutdown policy on 120 idle PCs after 15 mins of inactivity.</p>
+                                    <div class="rec-metrics">
+                                        <span class="metric-cost">Potential Savings: <strong>₹18,400/mo</strong></span>
+                                        <span class="metric-co2">CO₂ Reduction: <strong>1,278 kg/mo</strong></span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-emerald" onclick="simulateRecommendation(1)">
+                                    <i data-lucide="play-circle"></i> Simulate Action
+                                </button>
+                            </div>
+
+                            <div class="rec-item">
+                                <div class="rec-content">
+                                    <span class="rec-tag tag-transport">TRANSPORT</span>
+                                    <h4>Only 12% of students currently carpool</h4>
+                                    <p class="rec-action">Launch student carpool incentives to increase participation rate to 30%.</p>
+                                    <div class="rec-metrics">
+                                        <span class="metric-cost">Potential Savings: <strong>₹12,500/mo</strong></span>
+                                        <span class="metric-co2">CO₂ Reduction: <strong>1,250 kg/mo</strong></span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-emerald" onclick="simulateRecommendation(2)">
+                                    <i data-lucide="play-circle"></i> Simulate Action
+                                </button>
+                            </div>
+
+                            <div class="rec-item">
+                                <div class="rec-content">
+                                    <span class="rec-tag tag-schedule">ENERGY SCHEDULING</span>
+                                    <h4>High-load equipment operates outside solar window</h4>
+                                    <p class="rec-action">Shift water pump timer and server sync to 11 AM – 3 PM window.</p>
+                                    <div class="rec-metrics">
+                                        <span class="metric-cost">Potential Savings: <strong>₹7,500/mo</strong></span>
+                                        <span class="metric-co2">CO₂ Reduction: <strong>872 kg/mo</strong></span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-emerald" onclick="simulateRecommendation(3)">
+                                    <i data-lucide="play-circle"></i> Simulate Action
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PAGE 10: NAAC / NIRF REPORT PAGE -->
+                <section class="page-view hidden" id="page-naac">
+                    <div class="card naac-card">
+                        <div class="naac-wrapper">
+                            <div class="naac-info">
+                                <div class="naac-badge"><i data-lucide="award"></i> INSTITUTIONAL COMPLIANCE</div>
+                                <h2>NAAC / NIRF Sustainability Report</h2>
+                                <p>Generate your campus green audit and sustainability report in one click formatted according to NAAC Criterion VII (Institutional Values & Best Practices) & NIRF ranking frameworks.</p>
+                                
+                                <div class="report-checklist">
+                                    <span><i data-lucide="check-circle"></i> Electricity & Scope 2 Emissions</span>
+                                    <span><i data-lucide="check-circle"></i> Per-Student Carbon Benchmark</span>
+                                    <span><i data-lucide="check-circle"></i> Departmental League Breakdown</span>
+                                    <span><i data-lucide="check-circle"></i> Mess & Food Footprint</span>
+                                    <span><i data-lucide="check-circle"></i> Active Carbon Reduction Initiatives</span>
+                                    <span><i data-lucide="check-circle"></i> Verified Audit Timestamp</span>
+                                </div>
+
+                                <div class="naac-buttons">
+                                    <button class="btn btn-emerald btn-lg" onclick="triggerReportGeneration()">
+                                        <i data-lucide="file-down"></i> Generate PDF Report
+                                    </button>
+                                    <button class="btn btn-secondary btn-lg" onclick="previewReportModal()">
+                                        <i data-lucide="eye"></i> Preview Report
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="naac-preview-graphic">
+                                <div class="paper-stack">
+                                    <div class="paper paper-1"></div>
+                                    <div class="paper paper-2"></div>
+                                    <div class="paper paper-main">
+                                        <div class="p-header">
+                                            <span class="p-title">D.Y. PATIL COLLEGE</span>
+                                            <span class="p-sub">GREEN AUDIT REPORT 2026</span>
+                                        </div>
+                                        <div class="p-body">
+                                            <div class="p-bar font-bold">Total Emissions: 24,850 kg CO₂e</div>
+                                            <div class="p-bar">Grade: A+ Sustainability</div>
+                                            <div class="p-stamp">NAAC VII</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+
+    <!-- Modal 1: Anomaly Details -->
+    <div class="modal-overlay hidden" id="anomalyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="alert-triangle" class="text-warning"></i> Anomaly Investigation: Chemistry Lab</h3>
+                <button class="modal-close" onclick="closeModal('anomalyModal')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Detailed power consumption trend comparison for Chemistry Lab against baseline:</p>
+                <div class="anomaly-chart-box">
+                    <canvas id="anomalyDetailChart"></canvas>
+                </div>
+                <div class="investigation-notes">
+                    <h4>Root Cause Diagnosis:</h4>
+                    <ul>
+                        <li>HVAC unit left running overnight in Organic Chemistry Storage room.</li>
+                        <li>High power draw recorded between 11 PM and 5 AM.</li>
+                        <li>Estimated excess energy cost: <strong>₹6,800</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('anomalyModal')">Close</button>
+                <button class="btn btn-warning" onclick="resolveAnomaly()">Flag for Maintenance</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Report Generation Progress & PDF Preview -->
+    <div class="modal-overlay hidden" id="reportModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3><i data-lucide="file-text" class="text-emerald"></i> NAAC / NIRF Green Audit Report</h3>
+                <button class="modal-close" onclick="closeModal('reportModal')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="reportLoadingState" class="report-loading">
+                    <div class="spinner"></div>
+                    <h4 id="reportStepText">Compiling Campus Emissions Data...</h4>
+                    <p>Formatting tables according to NAAC Criterion VII standards...</p>
+                </div>
+
+                <div id="reportPreviewState" class="report-preview-document hidden">
+                    <div class="pdf-header">
+                        <div class="pdf-title">
+                            <h2>CAMPUS SUSTAINABILITY & CARBON AUDIT REPORT</h2>
+                            <p>D. Y. Patil College of Engineering • Academic Year 2026-27</p>
+                        </div>
+                        <div class="pdf-stamp">NAAC Criterion 7.1.6</div>
+                    </div>
+                    <div class="pdf-body">
+                        <div class="pdf-grid-2">
+                            <div class="pdf-box">
+                                <h5>Audit Summary</h5>
+                                <p><strong>Total Carbon Footprint:</strong> 24,850 kg CO₂e/month</p>
+                                <p><strong>Per Student Emission:</strong> 18.4 kg CO₂e/month</p>
+                                <p><strong>Energy Cost:</strong> ₹1,24,850/month</p>
+                            </div>
+                            <div class="pdf-box">
+                                <h5>Scope Wise Breakdown</h5>
+                                <p><strong>Scope 1 (Direct):</strong> 4,224 kg CO₂e (Mess/Gas)</p>
+                                <p><strong>Scope 2 (Electricity):</strong> 11,928 kg CO₂e (Grid)</p>
+                                <p><strong>Scope 3 (Commute & IT):</strong> 8,698 kg CO₂e</p>
+                            </div>
+                        </div>
+                        <div class="pdf-section">
+                            <h5>Departmental Sustainability Performance (Carbon League)</h5>
+                            <table class="pdf-table">
+                                <thead>
+                                    <tr><th>Rank</th><th>Department</th><th>Per Student Emission</th><th>Status</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>1</td><td>AIML Department</td><td>14.2 kg CO₂e</td><td>Grade A (Improving)</td></tr>
+                                    <tr><td>2</td><td>CSE Department</td><td>16.8 kg CO₂e</td><td>Grade A (Improving)</td></tr>
+                                    <tr><td>3</td><td>E&TC Department</td><td>19.4 kg CO₂e</td><td>Grade B (Moderate)</td></tr>
+                                    <tr><td>4</td><td>Mechanical Engineering</td><td>24.1 kg CO₂e</td><td>Grade C (Action Required)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('reportModal')">Close</button>
+                <button class="btn btn-emerald" id="downloadPdfBtn" disabled onclick="downloadPdfSimulated()">
+                    <i data-lucide="download"></i> Download Official PDF Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: Department Detail View -->
+    <div class="modal-overlay hidden" id="deptModal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="deptModalTitle"><i data-lucide="building" class="text-emerald"></i> Department Detail</h3>
+                <button class="modal-close" onclick="closeModal('deptModal')"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body" id="deptModalBody">
+                <!-- JS populated -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('deptModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

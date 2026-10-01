@@ -1,0 +1,13 @@
+# Portable Git (downloaded for pushing — not part of the project)
+pgit/
+PortableGit.exe
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
