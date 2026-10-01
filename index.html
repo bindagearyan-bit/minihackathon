@@ -19,14 +19,11 @@
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="brand-container">
-                <div class="brand-logo">
-                    <div class="logo-icon">
-                        <i data-lucide="activity"></i>
-                        <span class="leaf-dot"><i data-lucide="leaf"></i></span>
-                    </div>
+                <div class="brand-logo" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
+                    <img src="assets/logo.png" alt="EcoTrace Logo" class="brand-img" style="height: 48px; object-fit: contain; border-radius: 8px; background: #ffffff; padding: 4px 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.18);">
                     <div class="brand-text">
-                        <h2>CARBONPULSE</h2>
-                        <span class="brand-sub">Campus Carbon Auditor</span>
+                        <h2 style="font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; margin: 0;">EcoTrace</h2>
+                        <span class="brand-sub" style="font-size: 0.72rem; color: #86efac; font-weight: 600; letter-spacing: 0.5px;">CARBON PULSE</span>
                     </div>
                 </div>
                 
@@ -715,30 +712,41 @@
                                 <div class="result-layout">
                                     <div class="bill-preview-box">
                                         <div class="bill-doc-thumbnail">
-                                            <div class="doc-header">MSEDCL</div>
+                                            <div class="doc-header">MSEDCL BILL</div>
                                             <div class="doc-line"></div>
                                             <div class="doc-line short"></div>
-                                            <div class="doc-box">12,500 kWh</div>
+                                            <div class="doc-box" id="ocrThumbnailUnits">3,076 kWh</div>
                                         </div>
-                                        <span class="doc-name">MSEDCL_Sep2026.pdf</span>
+                                        <span class="doc-name" id="ocrThumbnailFilename">sample_bill.png</span>
                                     </div>
 
                                     <div class="result-details">
                                         <ul class="verification-checks">
-                                            <li><i data-lucide="check"></i> Billing month detected: <strong>September 2026</strong></li>
-                                            <li><i data-lucide="check"></i> Units consumed detected: <strong>12,500 kWh</strong></li>
-                                            <li><i data-lucide="check"></i> Marathi / Hindi OCR processed via Tesseract</li>
-                                            <li><i data-lucide="check"></i> Grid Emission Factor applied: <strong>0.71 kg CO₂e/kWh</strong></li>
+                                            <li><i data-lucide="calendar"></i> Billing Month: <input type="text" id="ocrInputMonth" value="September 2026" style="padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; width: 160px; margin-left: 8px;"></li>
+                                            <li><i data-lucide="zap"></i> Units Consumed (kWh): <input type="number" id="ocrInputUnits" value="3076" oninput="recalculateOcrPreview()" style="padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 700; width: 120px; margin-left: 8px;"></li>
+                                            <li><i data-lucide="indian-rupee"></i> Net Amount (₹): <input type="number" id="ocrInputAmount" value="38459" style="padding: 2px 8px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 700; width: 120px; margin-left: 8px;"></li>
+                                            <li><i data-lucide="building"></i> Assign Department: 
+                                                <select id="ocrDeptSelect" style="padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; margin-left: 8px; background: white;">
+                                                    <option value="1">Computer</option>
+                                                    <option value="2">Mechanical</option>
+                                                    <option value="3">Civil</option>
+                                                    <option value="4">Electrical</option>
+                                                    <option value="5">E&TC</option>
+                                                    <option value="6">Chemistry Lab</option>
+                                                    <option value="7">Hostel & Mess</option>
+                                                    <option value="8">Admin</option>
+                                                </select>
+                                            </li>
                                         </ul>
 
                                         <div class="big-emission-result">
-                                            <div class="val">8,875 <span class="unit">kg CO₂e</span></div>
-                                            <div class="desc">Calculated footprint for 12,500 kWh • Est. Cost: ₹88,750</div>
+                                            <div class="val" id="ocrPreviewCo2">2,184 <span class="unit">kg CO₂e</span></div>
+                                            <div class="desc" id="ocrPreviewDesc">3076 kWh × 0.71 kg/kWh (CEA India grid factor) • Est. Cost: ₹38,459</div>
                                         </div>
 
                                         <div class="result-actions">
-                                            <button class="btn btn-emerald" onclick="confirmAddBillToFootprint()">
-                                                <i data-lucide="plus-circle"></i> Add to Campus Footprint
+                                            <button class="btn btn-emerald" id="ocrConfirmBtn" onclick="confirmAddBillToFootprint()">
+                                                <i data-lucide="check-circle-2"></i> Confirm & Save to Database
                                             </button>
                                             <button class="btn btn-secondary" onclick="resetBillScanner()">
                                                 Scan Another Bill

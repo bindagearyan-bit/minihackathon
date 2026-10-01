@@ -58,15 +58,46 @@ app.include_router(anomalies_router, prefix="/api")
 app.include_router(tips_router, prefix="/api")
 
 
+from fastapi.responses import FileResponse, HTMLResponse
+
+# Path to the root frontend directory
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+
+@app.get("/app", response_class=HTMLResponse)
+def get_app():
+    """Serves the complete interactive EcoTrace frontend dashboard."""
+    index_file = os.path.join(parent_dir, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return "<h1>EcoTrace index.html not found</h1>"
+
+
+@app.get("/styles.css")
+def get_styles():
+    """Serves the frontend stylesheet."""
+    css_file = os.path.join(parent_dir, "styles.css")
+    return FileResponse(css_file, media_type="text/css")
+
+
+@app.get("/app.js")
+def get_script():
+    """Serves the frontend application JavaScript."""
+    js_file = os.path.join(parent_dir, "app.js")
+    return FileResponse(js_file, media_type="application/javascript")
+
+
 @app.get("/")
 def root():
     """
     Health check and welcome endpoint.
-    Points developers and judges to the interactive Swagger API documentation.
+    Points developers and judges to the dashboard and API documentation.
     """
     return {
         "app_name": "EcoTrace",
         "tagline": "Campus Carbon Footprint Auditor (UN SDG 13: Climate Action)",
-        "logo_url": "/assets/logo.png",
-        "message": "EcoTrace API is running. Visit /docs to test all APIs."
+        "dashboard_url": "http://localhost:8000/app",
+        "docs_url": "http://localhost:8000/docs",
+        "logo_url": "http://localhost:8000/assets/logo.png",
+        "message": "EcoTrace API is running. Visit /app for the dashboard or /docs for API testing."
     }
