@@ -495,17 +495,21 @@
             document.getElementById('sidebarAvatar').innerText = sessionUser.role.substring(0, 2).toUpperCase();
         }
 
+        const API_HOST = (window.location.protocol.startsWith('http') && window.location.host)
+            ? `${window.location.protocol}//${window.location.host}`
+            : 'http://127.0.0.1:8000';
+
         function downloadOfficialReportLabPdf() {
             showToast("Generating PDF", "Connecting to EcoTrace ReportLab engine...");
             // Trigger direct download from the backend API
-            const downloadUrl = "http://127.0.0.1:8000/api/reports/naac-pdf";
+            const downloadUrl = `${API_HOST}/api/reports/naac-pdf`;
             window.open(downloadUrl, "_blank");
         }
 
         // Live fetch overview data if backend is available
         async function loadReportData() {
             try {
-                const res = await fetch("http://127.0.0.1:8000/api/overview");
+                const res = await fetch(`${API_HOST}/api/overview`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data.total_carbon_kg) {

@@ -1,7 +1,10 @@
 // EcoTrace | CARBONPULSE - Campus Carbon Footprint Auditor (UN SDG 13)
 // Connected with live FastAPI Backend & Supabase Database
 
-const API_BASE = 'http://127.0.0.1:8000/api';
+// Auto-detect API host: works locally, over LAN, and on any cloud domain (Render, Railway, etc.)
+const API_BASE = (window.location.protocol.startsWith('http') && window.location.host)
+    ? `${window.location.protocol}//${window.location.host}/api`
+    : 'http://127.0.0.1:8000/api';
 
 // ==========================================
 // USER SPECIFIC DATA & ZERO-STATE MANAGEMENT
